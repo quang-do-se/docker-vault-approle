@@ -32,7 +32,7 @@ services:
       VAULT_ADDR: http://vault:8200
     networks:
       - vault-network
-    command: tail -f /dev/null      
+    command: tail -f /dev/null
 
 networks:
   vault-network:

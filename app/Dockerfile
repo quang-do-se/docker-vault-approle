@@ -1,6 +1,6 @@
 FROM openjdk:8-slim-buster@sha256:909df91324a3c147922036a82b69eb9b73ee902b80e382eadcf35a534158c6d4
 
-ENV TZ="US/Mountain"
+ENV TZ="America/Denver"
 
 RUN apt-get update \
   && apt-get install -y --no-install-recommends \
