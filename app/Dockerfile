@@ -20,9 +20,7 @@ RUN apt-get update \
   && apt-get -y autoremove \
   && apt-get clean autoclean \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*\
-  && ln -s /usr/bin/python3 /usr/bin/python \
-  && pip3 install --upgrade pip \
-  && pip3 install wheel setuptools ansible==2.10
+  && ln -s /usr/bin/python3 /usr/bin/python
 
 
 # Install Gradle
@@ -64,3 +62,11 @@ RUN set -o errexit -o nounset \
   \
   && echo "Testing Vault installation" \
   && vault --version
+
+
+RUN set -eux; \
+	groupadd --gid 999 --system app-user; \
+  useradd --uid 999 --system --shell /bin/bash --create-home --gid app-user app-user;
+
+USER app-user
+WORKDIR /home/app-user
