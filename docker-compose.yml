@@ -1,12 +1,12 @@
 version: '3'
 
 services:
+
   vault:
     image: vault
     container_name: vault
     ports:
       - "8200:8200"
-    restart: always
     volumes:
       - ./vault/logs:/vault/logs
       - ./vault/files:/vault/files
@@ -21,11 +21,20 @@ services:
     networks:
       - vault-network
 
+  orchestrator:
+    build:
+      context: ./orchestrator
+    container_name: orchestrator
+    environment:
+      VAULT_ADDR: http://vault:8200
+    networks:
+      - vault-network
+    command: tail -f /dev/null
+
   app:
     build:
       context: ./app
     container_name: app
-    restart: always
     volumes:
       - ./app/projects:/projects
     environment:
