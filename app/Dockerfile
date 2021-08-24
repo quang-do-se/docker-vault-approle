@@ -17,10 +17,10 @@ RUN apt-get update \
   python3 \
   python3-pip \
   python3-setuptools \
+  && ln -s /usr/bin/python3 /usr/bin/python
   && apt-get -y autoremove \
   && apt-get clean autoclean \
-  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*\
-  && ln -s /usr/bin/python3 /usr/bin/python
+  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 
 # Install Gradle
