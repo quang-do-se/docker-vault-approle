@@ -24,11 +24,6 @@ RUN apt-get update \
   && apt-get clean autoclean \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-COPY ./configs/ssh_config /etc/ssh/ssh_config
-COPY ./configs/sshd_config /etc/ssh/sshd_config
-COPY ./files/entrypoint.sh /usr/local/bin/entrypoint.sh
-
-RUN chmod +x /usr/local/bin/entrypoint.sh
 
 # Install Gradle
 ENV GRADLE_VERSION=6.6.1
@@ -73,7 +68,21 @@ RUN set -o errexit -o nounset \
 
 RUN set -eux; \
   groupadd --gid 999 --system app-group; \
-  useradd --uid 999 --system --shell /bin/bash --create-home --gid app-group app-user;
+  groupadd --system sftp; \
+  useradd --uid 999 --system --shell /bin/bash --create-home -G ssh app-user; \
+  mkdir -p /home/app-user/.ssh; \
+  touch /home/app-user/.ssh/authorized_keys; \
+  chown "app-user:app-group" -R /home/app-user; \
+  echo "app-user:app-pass" | chpasswd
+
+COPY ./configs/ssh_config /etc/ssh/ssh_config
+COPY ./configs/sshd_config /etc/ssh/sshd_config
+COPY ./files/user.sh /usr/local/bin/user.sh
+COPY ./files/entrypoint.sh /usr/local/bin/entrypoint.sh
+
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+EXPOSE 22
 
 WORKDIR /home/app-user
 

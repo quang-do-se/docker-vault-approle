@@ -11,7 +11,7 @@ AuthorizedKeysFile .ssh/authorized_keys
 
 
 Subsystem sftp internal-sftp
-Match Group sftp
+Match Group app-group
     ChrootDirectory %h
     X11Forwarding no
     AllowTcpForwarding no
