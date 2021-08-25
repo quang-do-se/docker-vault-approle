@@ -8,9 +8,9 @@ services:
     ports:
       - "8200:8200"
     volumes:
-      - ./vault/logs:/vault/logs
-      - ./vault/files:/vault/files
-      - ./vault/configs:/vault/configs
+      - ./vault/logs:/data/logs
+      - ./vault/files:/data/files
+      - ./vault/configs:/data/configs
     cap_add:
       - IPC_LOCK
     environment:
@@ -25,23 +25,25 @@ services:
     build:
       context: ./orchestrator
     container_name: orchestrator
+    volumes:
+      - ./orchestrator/files:/data/files
     environment:
       VAULT_ADDR: http://vault:8200
     networks:
       - vault-network
-    command: tail -f /dev/null
+    command: tail -f /dev/null # keep container running
 
   app:
     build:
       context: ./app
     container_name: app
     volumes:
-      - ./app/projects:/projects
+      - ./app/configs:/data/configs
     environment:
       VAULT_ADDR: http://vault:8200
     networks:
       - vault-network
-    command: tail -f /dev/null
+    command: tail -f /dev/null # keep container running
 
 networks:
   vault-network:
