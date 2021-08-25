@@ -31,7 +31,6 @@ services:
       VAULT_ADDR: http://vault:8200
     networks:
       - vault-network
-    command: tail -f /dev/null # keep container running
 
   app:
     build:
@@ -46,8 +45,6 @@ services:
       - vault-network
     tmpfs:
       - /testing:mode=741
-    command: tail -f /dev/null # keep container running
-    # entrypoint: /data/files/start_ssh.sh
 
 networks:
   vault-network:

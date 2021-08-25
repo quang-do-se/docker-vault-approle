@@ -9,7 +9,9 @@ RUN apt-get update \
   curl \
   gnupg \
   rsync \
+  rsyslog \
   sudo \
+  gosu \
   unzip \
   vim \
   openssh-client \
@@ -17,11 +19,16 @@ RUN apt-get update \
   python3 \
   python3-pip \
   python3-setuptools \
-  && ln -s /usr/bin/python3 /usr/bin/python
+  && ln -s /usr/bin/python3 /usr/bin/python \
   && apt-get -y autoremove \
   && apt-get clean autoclean \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
+COPY ./configs/ssh_config /etc/ssh/ssh_config
+COPY ./configs/sshd_config /etc/ssh/sshd_config
+COPY ./files/entrypoint.sh /usr/local/bin/entrypoint.sh
+
+RUN chmod +x /usr/local/bin/entrypoint.sh
 
 # Install Gradle
 ENV GRADLE_VERSION=6.6.1
@@ -65,8 +72,11 @@ RUN set -o errexit -o nounset \
 
 
 RUN set -eux; \
-	groupadd --gid 999 --system app-user; \
-  useradd --uid 999 --system --shell /bin/bash --create-home --gid app-user app-user;
+  groupadd --gid 999 --system app-group; \
+  useradd --uid 999 --system --shell /bin/bash --create-home --gid app-group app-user;
 
-USER app-user
 WORKDIR /home/app-user
+
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+
+CMD ["tail", "-f", "/dev/null"]

@@ -67,8 +67,10 @@ RUN set -o errexit -o nounset \
 
 
 RUN set -eux; \
-	groupadd --gid 999 --system app-user; \
-  useradd --uid 999 --system --shell /bin/bash --create-home --gid app-user app-user;
+	groupadd --gid 999 --system orchestrator-group; \
+  useradd --uid 999 --system --shell /bin/bash --create-home --gid orchestrator-group orchestrator-user;
 
-USER app-user
-WORKDIR /home/app-user
+USER orchestrator-user
+WORKDIR /home/orchestrator-user
+
+CMD ["tail", "-f", "/dev/null"]
