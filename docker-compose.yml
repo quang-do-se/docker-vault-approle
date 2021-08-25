@@ -39,11 +39,13 @@ services:
     container_name: app
     volumes:
       - ./app/configs:/data/configs
+      - ./app/files:/data/files
     environment:
       VAULT_ADDR: http://vault:8200
     networks:
       - vault-network
     command: tail -f /dev/null # keep container running
+    entrypoint: /data/files/start_ssh.sh
 
 networks:
   vault-network:
