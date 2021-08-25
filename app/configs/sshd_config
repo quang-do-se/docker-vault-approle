@@ -1,0 +1,20 @@
+ChallengeResponseAuthentication no
+UsePAM no
+PrintMotd no
+X11Forwarding no
+AllowTcpForwarding no
+AllowAgentForwarding no
+PermitTunnel no
+PasswordAuthentication yes
+PubkeyAuthentication yes
+AuthorizedKeysFile .ssh/authorized_keys
+
+
+Subsystem sftp internal-sftp
+Match Group sftp
+    ChrootDirectory %h
+    X11Forwarding no
+    AllowTcpForwarding no
+    AllowAgentForwarding no
+    PermitTunnel no
+    ForceCommand internal-sftp
