@@ -17,8 +17,6 @@ RUN apt-get update \
   openssh-client \
   openssh-server \
   python3 \
-  python3-pip \
-  python3-setuptools \
   && ln -s /usr/bin/python3 /usr/bin/python \
   && apt-get -y autoremove \
   && apt-get clean autoclean \
@@ -68,8 +66,7 @@ RUN set -o errexit -o nounset \
 
 RUN set -eux; \
   groupadd --gid 999 --system app-group; \
-  groupadd --system sftp; \
-  useradd --uid 999 --system --shell /bin/bash --create-home -G ssh app-user; \
+  useradd --uid 999 --system --shell /bin/bash --create-home --gid app-group app-user; \
   mkdir -p /home/app-user/.ssh; \
   touch /home/app-user/.ssh/authorized_keys; \
   chown "app-user:app-group" -R /home/app-user; \
@@ -77,7 +74,6 @@ RUN set -eux; \
 
 COPY ./configs/ssh_config /etc/ssh/ssh_config
 COPY ./configs/sshd_config /etc/ssh/sshd_config
-COPY ./files/user.sh /usr/local/bin/user.sh
 COPY ./files/entrypoint.sh /usr/local/bin/entrypoint.sh
 
 RUN chmod +x /usr/local/bin/entrypoint.sh

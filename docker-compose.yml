@@ -43,8 +43,6 @@ services:
       VAULT_ADDR: http://vault:8200
     networks:
       - vault-network
-    ports:
-      - "2222:22"      
     tmpfs:
       - /testing:mode=741
 

@@ -8,13 +8,3 @@ PermitTunnel no
 PasswordAuthentication yes
 PubkeyAuthentication yes
 AuthorizedKeysFile .ssh/authorized_keys
-
-
-Subsystem sftp internal-sftp
-Match Group app-group
-    ChrootDirectory %h
-    X11Forwarding no
-    AllowTcpForwarding no
-    AllowAgentForwarding no
-    PermitTunnel no
-    ForceCommand internal-sftp
