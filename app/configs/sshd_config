@@ -7,4 +7,6 @@ AllowAgentForwarding no
 PermitTunnel no
 PasswordAuthentication no
 PubkeyAuthentication yes
+PermitRootLogin no
+PermitRootLogin prohibit-password
 AuthorizedKeysFile .ssh/authorized_keys

@@ -27,6 +27,7 @@ services:
     container_name: orchestrator
     volumes:
       - ./orchestrator/files:/data/files
+      - ${HOME}/.ssh:/home/orchestrator-user/.ssh:ro
     environment:
       VAULT_ADDR: http://vault:8200
     networks:
@@ -44,7 +45,7 @@ services:
     networks:
       - vault-network
     tmpfs:
-      - /testing:mode=741
+      - /secrets:mode=440
 
 networks:
   vault-network:

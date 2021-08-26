@@ -68,7 +68,7 @@ RUN set -o errexit -o nounset \
 
 RUN set -eux; \
   groupadd --gid 999 --system orchestrator-group; \
-  useradd --uid 999 --system --shell /bin/bash --create-home --gid orchestrator-group orchestrator-user
+  useradd --uid 999 --system --shell /bin/bash --create-home --gid orchestrator-group orchestrator-user;
 
 USER orchestrator-user
 WORKDIR /home/orchestrator-user
