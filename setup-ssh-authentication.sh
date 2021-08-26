@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -eu -o pipefail
+
 echo 'Creating orchestrator private public keys...'
 
 # Quiet mode, no passphrase, always overwrite
