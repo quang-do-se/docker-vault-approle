@@ -68,7 +68,6 @@ RUN set -eux; \
   groupadd --gid 999 --system app-group; \
   useradd --uid 999 --system --shell /bin/bash --create-home --gid app-group app-user; \
   mkdir -p /home/app-user/.ssh; \
-  touch /home/app-user/.ssh/authorized_keys; \
   chown "app-user:app-group" -R /home/app-user; \
   echo "app-user:app-pass" | chpasswd
 

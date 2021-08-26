@@ -73,7 +73,4 @@ RUN set -eux; \
 USER orchestrator-user
 WORKDIR /home/orchestrator-user
 
-RUN mkdir -p /home/orchestrator-user/.ssh; \
-  ssh-keygen -t rsa -f /home/orchestrator-user/.ssh/id_rsa -q -N ""
-
 CMD ["tail", "-f", "/dev/null"]
