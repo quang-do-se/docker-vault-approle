@@ -2,12 +2,19 @@
 
 set -eu -o pipefail
 
+
 echo 'Creating orchestrator private public keys...'
 
 # Quiet mode, no passphrase, always overwrite
 docker-compose exec -T orchestrator ssh-keygen -t rsa -f /home/orchestrator-user/.ssh/id_rsa -q -N "" <<<y &>/dev/null
 
 public_key=$(docker-compose exec -T orchestrator cat /home/orchestrator-user/.ssh/id_rsa.pub)
+
+
+echo "Set password for app-user"
+
+docker-compose exec -u root -T app sh -c "echo 'app-user:app-pass' | chpasswd;"
+
 
 
 echo "Adding orchestrator public keys to app's authorized keys..."
