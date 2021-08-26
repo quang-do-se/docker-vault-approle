@@ -5,6 +5,6 @@ X11Forwarding no
 AllowTcpForwarding no
 AllowAgentForwarding no
 PermitTunnel no
-PasswordAuthentication yes
+PasswordAuthentication no
 PubkeyAuthentication yes
 AuthorizedKeysFile .ssh/authorized_keys
