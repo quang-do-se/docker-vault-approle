@@ -1,0 +1,5 @@
+all:
+  hosts:
+    app
+  vars:
+    ansible_user: app-user
