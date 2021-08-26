@@ -2,6 +2,7 @@
 
 echo 'Creating orchestrator private public keys...'
 
+# Quiet mode, no passphrase, always overwrite
 docker-compose exec -T orchestrator ssh-keygen -t rsa -f /home/orchestrator-user/.ssh/id_rsa -q -N "" <<<y &>/dev/null
 
 public_key=$(docker-compose exec -T orchestrator cat /home/orchestrator-user/.ssh/id_rsa.pub)
