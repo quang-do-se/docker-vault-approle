@@ -2,7 +2,7 @@
 
   tasks:
     - name: Git checkout
-      git: 
+      git:
         repo: 'git@github.com:qdo-se/spring-vault.git'
         dest: /home/orchestrator-user/spring-vault
 
@@ -11,5 +11,7 @@
         cd /home/orchestrator-user/spring-vault
         gradle clean assemble
 
+- hosts: all
 
+  tasks:
     # - name: Send jar to app container
