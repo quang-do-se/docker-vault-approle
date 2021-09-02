@@ -54,8 +54,8 @@ vault kv get -field=PASSWORD2 secret/hello-world
 
 ### VAULT CONTAINER
 
-# Create a new role "app"
-vault write auth/approle/role/app secretid_ttl=120m token_ttl=60m token_max_tll=120m
+# Create a new role "app" with "hello-world-policy"
+vault write auth/approle/role/app secretid_ttl=120m token_ttl=60m token_max_tll=120m policies="hello-world-policy"
 
 
 # Create a new policy for "app" role
@@ -70,8 +70,17 @@ vault write auth/approle/role/orchestrator policies=app-policy
 
 
 ### ORCHESTRATOR CONTAINER
+
 # Generate role id
 vault read -field=role_id auth/approle/role/app/role-id
 
 # Generate secret id
 vault write -force -field=secret_id auth/approle/role/app/secret-id
+
+
+### APP CONTAINER
+
+export VAULT_APPROLE_ROLEID=
+export VAULT_APPROLE_SECRETID=
+
+cd /app && java -jar spring-vault-1.0-SNAPSHOT.jar
