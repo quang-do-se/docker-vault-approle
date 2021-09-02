@@ -1,8 +1,10 @@
 - hosts: localhost
 
+  # Orchestrator's vault credentials
   vars:
     vault_role_id: 024b931b-bf1c-42f5-98ac-1d072d8bae57
     vault_secret_id: 8ae055a8-1b58-54bb-4471-40bd623766d1
+
   tasks:
     - name: Git checkout
       git:
@@ -14,14 +16,20 @@
         cd /home/orchestrator-user/spring-vault
         gradle clean assemble
 
-    # - name: Generate app's role and secret id 
-    #   shell: |
-    #     vault login $(vault write -field=token auth/approle/login role_id="{{ vault_role_id }}" secret_id="{{ vault_secret_id }}")
-    #     vault read -field=role_id auth/approle/role/app/role-id
+    - name: Generate app's role and secret id 
+      shell: |
+        vault login $(vault write -field=token auth/approle/login role_id="{{ vault_role_id }}" secret_id="{{ vault_secret_id }}")
+        echo vault.app-role.role-id=$(vault read -field=role_id auth/approle/role/app/role-id) >> /tmp/vault.properties
+        echo vault.app-role.secret-id=$(vault write -force -field=secret_id auth/approle/role/app/secret-id) >> /tmp/vault.properties
 
 - hosts: all
 
   tasks:
+    - name: Send vault.properties to app container
+      ansible.builtin.copy:
+        src: /tmp/vault.properties
+        dest: /app
+    
     - name: Send jar to app container
       ansible.builtin.copy:
         src: /home/orchestrator-user/spring-vault/build/libs/spring-vault-1.0-SNAPSHOT.jar
