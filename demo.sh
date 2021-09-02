@@ -80,7 +80,4 @@ vault write -force -field=secret_id auth/approle/role/app/secret-id
 
 ### APP CONTAINER
 
-export VAULT_APPROLE_ROLEID=
-export VAULT_APPROLE_SECRETID=
-
-cd /app && java -jar spring-vault-1.0-SNAPSHOT.jar
+cd /app && java -jar spring-vault-1.0-SNAPSHOT.jar --spring.config.location=file:/app/vault.properties
