@@ -77,6 +77,9 @@ vault read -field=role_id auth/approle/role/app/role-id
 # Generate secret id
 vault write -force -field=secret_id auth/approle/role/app/secret-id
 
+cd /data/files
+
+ansible-playbook ansible-playbook-deploy-app.yml --inventory=inventory.yml
 
 ### APP CONTAINER
 
