@@ -11,7 +11,9 @@
         cd /home/orchestrator-user/spring-vault
         gradle clean assemble
 
-- hosts: all
+# - hosts: all
 
-  tasks:
-    # - name: Send jar to app container
+#   tasks:
+
+#     - name: Send jar to app container
+
