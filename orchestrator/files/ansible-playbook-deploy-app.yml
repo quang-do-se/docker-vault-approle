@@ -11,9 +11,10 @@
         cd /home/orchestrator-user/spring-vault
         gradle clean assemble
 
-# - hosts: all
+- hosts: all
 
-#   tasks:
-
-#     - name: Send jar to app container
-
+  tasks:
+    - name: Send jar to app container
+      ansible.builtin.copy:
+        src: /home/orchestrator-user/spring-vault/build/libs/spring-vault-1.0-SNAPSHOT.jar
+        dest: /app
