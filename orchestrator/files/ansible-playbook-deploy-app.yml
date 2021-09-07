@@ -10,7 +10,7 @@
       git:
         repo: 'git@github.com:qdo-se/spring-vault.git'
         dest: /home/orchestrator-user/spring-vault
-
+        version: api
 
     - name: Gradle build
       shell: |
@@ -22,6 +22,7 @@
         vault login $(vault write -field=token auth/approle/login role_id="{{ vault_role_id }}" secret_id="{{ vault_secret_id }}")
         echo vault.app-role.role-id=$(vault read -field=role_id auth/approle/role/app/role-id) >> /tmp/vault.properties
         echo vault.app-role.secret-id=$(vault write -force -field=secret_id auth/approle/role/app/secret-id) >> /tmp/vault.properties
+      no_log: true
 
 - hosts: all
 
