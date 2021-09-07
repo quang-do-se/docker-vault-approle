@@ -2,8 +2,18 @@
 
 docker-compose down -v && docker-compose up -d --build && ./setup-ssh-authentication.sh
 
-### VAULT CONTAINER
+
+### LOGIN TO CONTAINERS
+
 docker-compose exec vault /bin/sh
+
+docker-compose exec orchestrator /bin/bash
+
+
+
+### VAULT CONTAINER
+
+
 
 vault auth enable approle
 
@@ -36,8 +46,6 @@ vault write -force -field=secret_id auth/approle/role/orchestrator/secret-id
 
 ### ORCHESTRATOR CONTAINER
 
-docker-compose exec orchestrator /bin/bash
-
 # Store role id and secret id in environment variables or configuration file
 
 export VAULT_ROLE_ID=
@@ -49,12 +57,13 @@ vault kv get -field=PASSWORD1 secret/hello-world
 vault kv get -field=PASSWORD2 secret/hello-world
 
 
-docker-compose exec vault /bin/sh
+### APP CONTAINER
 
 # Assign policy to role
 vault write auth/approle/role/orchestrator policies=hello-world-policy
 
-docker-compose exec orchestrator /bin/bash
+
+### ORCHESTRATOR CONTAINER
 
 # Try again, need new token
 vault login $(vault write -field=token auth/approle/login role_id="${VAULT_ROLE_ID}" secret_id="${VAULT_SECRET_ID}")
@@ -87,6 +96,7 @@ EOF
 vault write auth/approle/role/orchestrator policies=ochestrator-policy
 
 
+
 ### ORCHESTRATOR CONTAINER
 
 docker-compose exec orchestrator /bin/bash
@@ -100,11 +110,11 @@ vault read -field=role_id auth/approle/role/app/role-id
 # Generate secret id
 vault write -force -field=secret_id auth/approle/role/app/secret-id
 
-cd /data/files
+cd /data/files && ansible-playbook ansible-playbook-deploy-app.yml --inventory=inventory.yml
 
-ansible-playbook ansible-playbook-deploy-app.yml --inventory=inventory.yml
 
 
 ### APP CONTAINER
+dce -u app-user app /bin/bash
 
 cd /app && java -jar spring-vault-1.0-SNAPSHOT.jar --spring.config.location=file:/app/vault.properties
