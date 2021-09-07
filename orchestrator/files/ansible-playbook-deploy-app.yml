@@ -2,15 +2,15 @@
 
   # Orchestrator's vault credentials
   vars:
-    vault_role_id: 024b931b-bf1c-42f5-98ac-1d072d8bae57
-    vault_secret_id: 8ae055a8-1b58-54bb-4471-40bd623766d1
+    vault_role_id: "{{ lookup('env', 'VAULT_ROLE_ID') }}"
+    vault_secret_id: "{{ lookup('env', 'VAULT_SECRET_ID') }}"
 
   tasks:
     - name: Git checkout
       git:
         repo: 'git@github.com:qdo-se/spring-vault.git'
         dest: /home/orchestrator-user/spring-vault
-        version: api
+
 
     - name: Gradle build
       shell: |

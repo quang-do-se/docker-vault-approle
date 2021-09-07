@@ -33,6 +33,7 @@ vault write -force -field=secret_id auth/approle/role/orchestrator/secret-id
 
 
 
+
 ### ORCHESTRATOR CONTAINER
 
 docker-compose exec orchestrator /bin/bash
@@ -64,26 +65,34 @@ vault kv get -field=PASSWORD2 secret/hello-world
 
 
 
+
 ### PART II
 
 ### VAULT CONTAINER
+
+docker-compose exec vault /bin/sh
 
 # Create a new role "app" with "hello-world-policy"
 vault write auth/approle/role/app secretid_ttl=120m token_ttl=60m token_max_tll=120m policies="hello-world-policy"
 
 
 # Create a new policy for "app" role
-vault policy write app-policy -<<EOF
+vault policy write ochestrator-policy -<<EOF
 path "auth/approle/role/app/*" {
  capabilities = ["create", "read", "update", "delete", "list"]
 }
 EOF
 
 # Give orchestrator new policy
-vault write auth/approle/role/orchestrator policies=app-policy
+vault write auth/approle/role/orchestrator policies=ochestrator-policy
 
 
 ### ORCHESTRATOR CONTAINER
+
+docker-compose exec orchestrator /bin/bash
+
+# Login again to get a new token
+vault login $(vault write -field=token auth/approle/login role_id="${VAULT_ROLE_ID}" secret_id="${VAULT_SECRET_ID}")
 
 # Generate role id
 vault read -field=role_id auth/approle/role/app/role-id
