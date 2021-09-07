@@ -79,8 +79,6 @@ vault kv get -field=PASSWORD2 secret/hello-world
 
 ### VAULT CONTAINER
 
-docker-compose exec vault /bin/sh
-
 # Create a new role "app" with "hello-world-policy"
 vault write auth/approle/role/app secretid_ttl=120m token_ttl=60m token_max_tll=120m policies="hello-world-policy"
 
@@ -99,22 +97,18 @@ vault write auth/approle/role/orchestrator policies=ochestrator-policy
 
 ### ORCHESTRATOR CONTAINER
 
-docker-compose exec orchestrator /bin/bash
-
 # Login again to get a new token
 vault login $(vault write -field=token auth/approle/login role_id="${VAULT_ROLE_ID}" secret_id="${VAULT_SECRET_ID}")
 
-# Generate role id
+# Test generating role id/secret id
 vault read -field=role_id auth/approle/role/app/role-id
-
-# Generate secret id
 vault write -force -field=secret_id auth/approle/role/app/secret-id
 
+
+# Run playbook
 cd /data/files && ansible-playbook ansible-playbook-deploy-app.yml --inventory=inventory.yml
 
 
 
 ### APP CONTAINER
-dce -u app-user app /bin/bash
-
 cd /app && java -jar spring-vault-1.0-SNAPSHOT.jar --spring.config.location=file:/app/vault.properties
