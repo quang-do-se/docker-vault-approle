@@ -10,6 +10,7 @@
       git:
         repo: 'git@github.com:qdo-se/spring-vault.git'
         dest: /home/orchestrator-user/spring-vault
+        version: api
 
     - name: Gradle build
       shell: |

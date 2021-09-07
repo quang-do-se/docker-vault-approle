@@ -1,8 +1,9 @@
 ### Start container
 
-docker-composec down -v && docker-compose up -d --build && ./setup-ssh-authentication.sh
+docker-compose down -v && docker-compose up -d --build && ./setup-ssh-authentication.sh
 
 ### VAULT CONTAINER
+docker-compose exec vault /bin/sh
 
 vault auth enable approle
 
@@ -22,8 +23,6 @@ vault list auth/approle/role
 vault policy list
 vault policy read <policy>
 
-# Assign policy to role
-vault write auth/approle/role/orchestrator policies=hello-world-policy
 
 # Generate role id
 vault read -field=role_id auth/approle/role/orchestrator/role-id
@@ -36,6 +35,8 @@ vault write -force -field=secret_id auth/approle/role/orchestrator/secret-id
 
 ### ORCHESTRATOR CONTAINER
 
+docker-compose exec orchestrator /bin/bash
+
 # Store role id and secret id in environment variables or configuration file
 
 export VAULT_ROLE_ID=
@@ -43,6 +44,19 @@ export VAULT_SECRET_ID=
 
 vault login $(vault write -field=token auth/approle/login role_id="${VAULT_ROLE_ID}" secret_id="${VAULT_SECRET_ID}")
 
+vault kv get -field=PASSWORD1 secret/hello-world
+vault kv get -field=PASSWORD2 secret/hello-world
+
+
+docker-compose exec vault /bin/sh
+
+# Assign policy to role
+vault write auth/approle/role/orchestrator policies=hello-world-policy
+
+docker-compose exec orchestrator /bin/bash
+
+# Try again, need new token
+vault login $(vault write -field=token auth/approle/login role_id="${VAULT_ROLE_ID}" secret_id="${VAULT_SECRET_ID}")
 
 vault kv get -field=PASSWORD1 secret/hello-world
 vault kv get -field=PASSWORD2 secret/hello-world
@@ -80,6 +94,7 @@ vault write -force -field=secret_id auth/approle/role/app/secret-id
 cd /data/files
 
 ansible-playbook ansible-playbook-deploy-app.yml --inventory=inventory.yml
+
 
 ### APP CONTAINER
 
