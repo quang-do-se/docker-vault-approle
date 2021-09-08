@@ -86,7 +86,7 @@ vault write auth/approle/role/app secret_id_ttl=120m secret_id_num_uses=1 token_
 # Create a new policy for "app" role
 vault policy write ochestrator-policy -<<EOF
 path "auth/approle/role/app/*" {
- capabilities = ["create", "read", "update", "delete", "list"]
+ capabilities = ["create", "read", "update", "delete", "list", "root"]
 }
 EOF
 
@@ -129,3 +129,8 @@ vault write auth/approle/role/app secret_id_ttl=5m secret_id_num_uses=5 token_tt
 # secret_id_num_uses: how many times secret id can be used to get a fresh token
 
 # secret_id_ttl: how long secret id can be used to get a fresh token
+
+
+### Demo policy
+
+# Orchestrator cannot fetch its own role and secret ids
