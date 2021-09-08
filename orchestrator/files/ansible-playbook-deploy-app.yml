@@ -26,7 +26,7 @@
         echo vault.uri=http://vault:8200 >> /tmp/vault.properties
       no_log: true
 
-- hosts: app
+- hosts: app_group
 
   tasks:
     - name: Send vault.properties to app container
