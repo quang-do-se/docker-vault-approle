@@ -26,7 +26,7 @@ path "secret/data/hello-world" {
 EOF
 
 # Create role 'orchestrator'
-vault write auth/approle/role/orchestrator secretid_ttl=120m token_ttl=60m token_max_tll=120m
+vault write auth/approle/role/orchestrator secret_id_ttl=120m token_ttl=60m token_max_ttl=120m
 
 # OPTIONAL: List all roles
 vault list auth/approle/role
@@ -80,7 +80,7 @@ vault kv get -field=PASSWORD2 secret/hello-world
 ### VAULT CONTAINER
 
 # Create a new role "app" with "hello-world-policy"
-vault write auth/approle/role/app secretid_ttl=120m token_ttl=60m token_max_tll=120m policies="hello-world-policy"
+vault write auth/approle/role/app secret_id_ttl=120m secret_id_num_uses=1 token_ttl=60m token_max_ttl=120m token_num_uses=0 policies="hello-world-policy"
 
 
 # Create a new policy for "app" role
@@ -112,3 +112,20 @@ cd /data/files && ansible-playbook ansible-playbook-deploy-app.yml --inventory=i
 
 ### APP CONTAINER
 java -jar /app/spring-vault-1.0-SNAPSHOT.jar --spring.config.location=file:/app/vault.properties
+
+
+
+
+
+### EXTRA
+
+vault list -output-curl-string /auth/approle/role/app/secret-id
+
+vault write auth/approle/role/app secret_id_ttl=5m secret_id_num_uses=5 token_ttl=1m token_max_ttl=1m token_num_uses=1 policies="hello-world-policy"
+
+# token_num_uses=0: as long as token is refreshed, it live forever?
+# The maximum number of times a generated token may be used (within its lifetime); 0 means unlimited. If you require the token to have the ability to create child tokens, you will need to set this value to 0.
+
+# secret_id_num_uses: how many times secret id can be used to get a fresh token
+
+# secret_id_ttl: how long secret id can be used to get a fresh token

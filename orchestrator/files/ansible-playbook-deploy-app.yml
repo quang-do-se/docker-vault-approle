@@ -26,7 +26,7 @@
         echo vault.uri=http://vault:8200 >> /tmp/vault.properties
       no_log: true
 
-- hosts: app_group
+- hosts: app
 
   tasks:
     - name: Send vault.properties to app container
@@ -49,6 +49,8 @@
 
     - name: Start application
       shell: |
+        export TZ=America/Denver
+
         nohup /usr/local/openjdk-8/bin/java \
           -jar /app/spring-vault-1.0-SNAPSHOT.jar \
           --spring.config.location=file:/app/vault.properties \
