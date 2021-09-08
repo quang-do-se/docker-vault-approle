@@ -80,12 +80,12 @@ vault kv get -field=PASSWORD2 secret/hello-world
 ### VAULT CONTAINER
 
 # Create a new role "app" with "hello-world-policy"
-vault write auth/approle/role/app secret_id_ttl=120m secret_id_num_uses=1 token_ttl=60m token_max_ttl=120m token_num_uses=0 policies="hello-world-policy"
+vault write auth/approle/role/app secret_id_ttl=120m token_ttl=60m token_max_ttl=120m token_num_uses=0 policies="hello-world-policy"
 
 
 # Create a new policy for "app" role
 vault policy write ochestrator-policy -<<EOF
-path "auth/approle/role/app/*" {
+path "auth/approle/role/app*" {
  capabilities = ["create", "read", "update", "delete", "list", "root"]
 }
 EOF
@@ -121,7 +121,7 @@ java -jar /app/spring-vault-1.0-SNAPSHOT.jar --spring.config.location=file:/app/
 
 vault list -output-curl-string /auth/approle/role/app/secret-id
 
-vault write auth/approle/role/app secret_id_ttl=5m secret_id_num_uses=5 token_ttl=1m token_max_ttl=1m token_num_uses=1 policies="hello-world-policy"
+vault write auth/approle/role/app secret_id_ttl=5m secret_id_num_uses=1 token_ttl=1m token_max_ttl=1m token_num_uses=1 policies="hello-world-policy"
 
 # token_num_uses=0: as long as token is refreshed, it live forever?
 # The maximum number of times a generated token may be used (within its lifetime); 0 means unlimited. If you require the token to have the ability to create child tokens, you will need to set this value to 0.
