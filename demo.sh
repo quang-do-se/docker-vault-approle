@@ -1,6 +1,7 @@
 ### Start container
 
-docker-compose down -v && docker-compose up -d --build && ./setup-ssh-authentication.sh
+docker-compose down -v
+docker-compose --project-name demo up -d --build && ./setup-ssh-authentication.sh
 
 
 ### LOGIN TO CONTAINERS
