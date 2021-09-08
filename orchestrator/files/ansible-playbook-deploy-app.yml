@@ -20,11 +20,13 @@
     - name: Generate app's role and secret id 
       shell: |
         vault login $(vault write -field=token auth/approle/login role_id="{{ vault_role_id }}" secret_id="{{ vault_secret_id }}")
-        echo vault.app-role.role-id=$(vault read -field=role_id auth/approle/role/app/role-id) >> /tmp/vault.properties
+        
+        echo vault.app-role.role-id=$(vault read -field=role_id auth/approle/role/app/role-id) > /tmp/vault.properties
         echo vault.app-role.secret-id=$(vault write -force -field=secret_id auth/approle/role/app/secret-id) >> /tmp/vault.properties
+        echo vault.uri=http://vault:8200 >> /tmp/vault.properties
       no_log: true
 
-- hosts: all
+- hosts: app_group
 
   tasks:
     - name: Send vault.properties to app container
@@ -36,3 +38,19 @@
       ansible.builtin.copy:
         src: /home/orchestrator-user/spring-vault/build/libs/spring-vault-1.0-SNAPSHOT.jar
         dest: /app
+
+    - name: Stop running application
+      shell: |
+        pid=$(ps aux | grep -i "spring-vault.*\.jar" | grep -v grep | awk '{print $2}')
+        
+        if ps -p "${pid}" > /dev/null; then
+          kill "${pid}"
+        fi
+
+    - name: Start application
+      shell: |
+        nohup /usr/local/openjdk-8/bin/java \
+          -jar /app/spring-vault-1.0-SNAPSHOT.jar \
+          --spring.config.location=file:/app/vault.properties \
+          --spring.profiles.active=production \
+          --logging.file.path=/app/logs &

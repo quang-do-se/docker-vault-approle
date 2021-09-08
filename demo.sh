@@ -111,4 +111,4 @@ cd /data/files && ansible-playbook ansible-playbook-deploy-app.yml --inventory=i
 
 
 ### APP CONTAINER
-cd /app && java -jar spring-vault-1.0-SNAPSHOT.jar --spring.config.location=file:/app/vault.properties
+java -jar /app/spring-vault-1.0-SNAPSHOT.jar --spring.config.location=file:/app/vault.properties
