@@ -9,7 +9,7 @@ docker-compose exec vault /bin/sh
 
 docker-compose exec orchestrator /bin/bash
 
-
+docker-compose exec -u app-user app /bin/bash
 
 ### VAULT CONTAINER
 
