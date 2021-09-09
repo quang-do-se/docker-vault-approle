@@ -52,6 +52,36 @@ vault auth list
 vault policy read <policy>
 
 
+# Generate role id for orchestrator
+vault read -field=role_id auth/approle/role/orchestrator/role-id
+
+# Generate secret id orchestrator
+vault write -force -field=secret_id auth/approle/role/orchestrator/secret-id
+
+
+
+### ORCHESTRATOR CONTAINER, add role id and secret id
+
+export VAULT_ROLE_ID=
+export VAULT_SECRET_ID=
+
+vault write -field=token auth/approle/login role_id="${VAULT_ROLE_ID}" secret_id="${VAULT_SECRET_ID}"
+
+vault login <token>
+
+# Short form
+vault login $(vault write -field=token auth/approle/login role_id="${VAULT_ROLE_ID}" secret_id="${VAULT_SECRET_ID}")
+
+# Confirm login
+vault token lookup
+
+# Try read secret
+vault kv get -field=PASSWORD1 secret/hello-world
+
+
+
+### VAULT CONTAINER
+
 # Create a policy to read secret
 vault policy write hello-world-policy -<<EOF
 path "secret/data/hello-world" {
@@ -68,27 +98,6 @@ path "auth/approle/role/app*" {
 EOF
 
 
-# Generate role id for orchestrator
-vault read -field=role_id auth/approle/role/orchestrator/role-id
-
-# Generate secret id orchestrator
-vault write -force -field=secret_id auth/approle/role/orchestrator/secret-id
-
-
-
-### ORCHESTRATOR CONTAINER, add role id and secret id
-export VAULT_ROLE_ID=
-export VAULT_SECRET_ID=
-
-vault write -field=token auth/approle/login role_id="${VAULT_ROLE_ID}" secret_id="${VAULT_SECRET_ID}"
-
-vault login <token>
-
-# Short form
-
-
-# Confirm login
-vault token lookup
 
 
 
@@ -181,3 +190,10 @@ vault token capabilities /auth/approle/role/app
 # docker inspect app -f "{{json .Config.Env}}" | jq
 
 # docker inspect vault -f "{{json .NetworkSettings.Networks}}" | jq
+
+
+### ITERM
+
+# Split: cmd+d, cmd+shift+d
+
+# maximize, minimize: cmd+shift+enter
