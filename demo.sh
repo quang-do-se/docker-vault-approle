@@ -40,7 +40,7 @@ vault kv get -field=PASSWORD2 secret/hello-world
 
 
 # Create role 'orchestrator'
-vault write auth/approle/role/orchestrator secret_id_ttl=120m token_ttl=30s token_max_ttl=60m
+vault write auth/approle/role/orchestrator secret_id_ttl=120m token_ttl=60m token_max_ttl=120m
 
 # Create role 'app'
 vault write auth/approle/role/app secret_id_ttl=120m token_ttl=30s token_max_ttl=60m
@@ -145,8 +145,8 @@ vault login $(vault write -field=token auth/approle/login role_id="${VAULT_ROLE_
 
 
 # Test generating role id/secret id
-vault read -field=role_id auth/approle/role/app/role-id
-vault write -force -field=secret_id auth/approle/role/app/secret-id
+vault read auth/approle/role/app/role-id
+vault write -force auth/approle/role/app/secret-id
 
 
 # Run playbook
