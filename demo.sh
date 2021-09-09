@@ -123,19 +123,9 @@ vault kv get -field=PASSWORD2 secret/hello-world
 
 ### VAULT CONTAINER
 
-# Grant policy to app role 
-
-vault write auth/approle/role/app policies=hello-world-policy
-
-
 # Grant policy to orchestrator role
 
 vault write auth/approle/role/orchestrator policies=orchestrator-policy
-
-
-### ORCHESTRATOR CONTAINER
-vault login $(vault write -field=token auth/approle/login role_id="${VAULT_ROLE_ID}" secret_id="${VAULT_SECRET_ID}")
-
 
 
 ### ORCHESTRATOR CONTAINER
@@ -148,6 +138,16 @@ vault login $(vault write -field=token auth/approle/login role_id="${VAULT_ROLE_
 vault read auth/approle/role/app/role-id
 vault write -force auth/approle/role/app/secret-id
 
+
+
+### VAULT CONTAINER
+
+# Grant policy to app role 
+
+vault write auth/approle/role/app policies=hello-world-policy
+
+
+### ORCHESTRATOR CONTAINER
 
 # Run playbook
 cd /data/files && ansible-playbook ansible-playbook-deploy-app.yml --inventory=inventory.yml
