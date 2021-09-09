@@ -8,6 +8,11 @@ docker-compose up -d --build && ./setup-ssh-authentication.sh
 
 docker-compose exec vault /bin/sh
 
+docker container exec -it vault /bin/sh
+
+# By default, docker-compose exec attach a terminal for us, so no need for -it
+
+
 docker-compose exec orchestrator /bin/bash
 
 docker-compose exec -u app-user app /bin/bash
@@ -22,9 +27,13 @@ hostname
 
 ### VAULT CONTAINER
 
+vault kv put secret/hello-world PASSWORD1=12345 PASSWORD2=abcde
+a
+vault kv put -output-curl-string secret/hello-world PASSWORD1=12345 PASSWORD2=abcde0
+
+
 vault auth enable approle
 
-vault kv put secret/hello-world PASSWORD1=12345 PASSWORD2=abcde
 
 vault kv get -field=PASSWORD1 secret/hello-world
 vault kv get -field=PASSWORD2 secret/hello-world
