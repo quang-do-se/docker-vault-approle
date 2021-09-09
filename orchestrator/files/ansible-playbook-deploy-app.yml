@@ -17,7 +17,7 @@
         cd /home/orchestrator-user/spring-vault
         gradle clean assemble
 
-    - name: Generate app's role and secret id 
+    - name: Generate app's role id and secret id 
       shell: |
         vault login $(vault write -field=token auth/approle/login role_id="{{ vault_role_id }}" secret_id="{{ vault_secret_id }}")
         

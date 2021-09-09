@@ -12,87 +12,111 @@ docker-compose exec orchestrator /bin/bash
 
 docker-compose exec -u app-user app /bin/bash
 
+# Test ssh
+hostname
+ssh app-user@app
+hostname
+
+
+
+
 ### VAULT CONTAINER
-
-
 
 vault auth enable approle
 
 vault kv put secret/hello-world PASSWORD1=12345 PASSWORD2=abcde
 
+vault kv get -field=PASSWORD1 secret/hello-world
+vault kv get -field=PASSWORD2 secret/hello-world
+
+
+# Create role 'orchestrator'
+vault write auth/approle/role/orchestrator secret_id_ttl=120m token_ttl=30s token_max_ttl=60m
+
+# Create role 'app'
+vault write auth/approle/role/app secret_id_ttl=120m token_ttl=30s token_max_ttl=60m
+
+# OPTIONAL: List all roles
+vault list auth/approle/role
+vault policy list
+vault auth list
+vault policy read <policy>
+
+
+# Create a policy to read secret
 vault policy write hello-world-policy -<<EOF
 path "secret/data/hello-world" {
  capabilities = ["read", "list"]
 }
 EOF
 
-# Create role 'orchestrator'
-vault write auth/approle/role/orchestrator secret_id_ttl=120m token_ttl=60m token_max_ttl=120m
 
-# OPTIONAL: List all roles
-vault list auth/approle/role
-vault policy list
-vault policy read <policy>
+# Create a new policy for "app" role
+vault policy write orchestrator-policy -<<EOF
+path "auth/approle/role/app*" {
+ capabilities = ["create", "read", "update", "delete", "list"]
+}
+EOF
 
 
-# Generate role id
+# Generate role id for orchestrator
 vault read -field=role_id auth/approle/role/orchestrator/role-id
 
-# Generate secret id
+# Generate secret id orchestrator
 vault write -force -field=secret_id auth/approle/role/orchestrator/secret-id
 
 
 
-
-
-### ORCHESTRATOR CONTAINER
-
-# Store role id and secret id in environment variables or configuration file
-
+### ORCHESTRATOR CONTAINER, add role id and secret id
 export VAULT_ROLE_ID=
 export VAULT_SECRET_ID=
 
-vault login $(vault write -field=token auth/approle/login role_id="${VAULT_ROLE_ID}" secret_id="${VAULT_SECRET_ID}")
+vault write -field=token auth/approle/login role_id="${VAULT_ROLE_ID}" secret_id="${VAULT_SECRET_ID}"
 
-vault kv get -field=PASSWORD1 secret/hello-world
-vault kv get -field=PASSWORD2 secret/hello-world
+vault login <token>
+
+# Short form
 
 
-### APP CONTAINER
+# Confirm login
+vault token lookup
 
-# Assign policy to role
+
+
+### VAULT CONTAINER
+
+# Grant policies
 vault write auth/approle/role/orchestrator policies=hello-world-policy
 
 
 ### ORCHESTRATOR CONTAINER
-
-# Try again, need new token
 vault login $(vault write -field=token auth/approle/login role_id="${VAULT_ROLE_ID}" secret_id="${VAULT_SECRET_ID}")
 
 vault kv get -field=PASSWORD1 secret/hello-world
 vault kv get -field=PASSWORD2 secret/hello-world
 
 
+# Turn off policies
+vault write auth/approle/role/orchestrator policies=
 
+vault kv get -field=PASSWORD1 secret/hello-world
+vault kv get -field=PASSWORD2 secret/hello-world
 
-
-### PART II
 
 ### VAULT CONTAINER
 
-# Create a new role "app" with "hello-world-policy"
-vault write auth/approle/role/app secret_id_ttl=120m token_ttl=60m token_max_ttl=120m token_num_uses=0 policies="hello-world-policy"
+# Grant policy to app role 
+
+vault write auth/approle/role/app policies=hello-world-policy
 
 
-# Create a new policy for "app" role
-vault policy write ochestrator-policy -<<EOF
-path "auth/approle/role/app*" {
- capabilities = ["create", "read", "update", "delete", "list", "root"]
-}
-EOF
+# Grant policy to orchestrator role
 
-# Give orchestrator new policy
-vault write auth/approle/role/orchestrator policies=ochestrator-policy
+vault write auth/approle/role/orchestrator policies=orchestrator-policy
+
+
+### ORCHESTRATOR CONTAINER
+vault login $(vault write -field=token auth/approle/login role_id="${VAULT_ROLE_ID}" secret_id="${VAULT_SECRET_ID}")
 
 
 
@@ -100,6 +124,7 @@ vault write auth/approle/role/orchestrator policies=ochestrator-policy
 
 # Login again to get a new token
 vault login $(vault write -field=token auth/approle/login role_id="${VAULT_ROLE_ID}" secret_id="${VAULT_SECRET_ID}")
+
 
 # Test generating role id/secret id
 vault read -field=role_id auth/approle/role/app/role-id
@@ -112,7 +137,9 @@ cd /data/files && ansible-playbook ansible-playbook-deploy-app.yml --inventory=i
 
 
 ### APP CONTAINER
-java -jar /app/spring-vault-1.0-SNAPSHOT.jar --spring.config.location=file:/app/vault.properties
+java -jar /app/spring-vault-1.0-SNAPSHOT.jar --spring.config.location=file:/app/vault.properties --spring.profiles.active=development --logging.file.path=/app/logs
+
+
 
 
 
@@ -130,6 +157,10 @@ vault write auth/approle/role/app secret_id_ttl=5m secret_id_num_uses=1 token_tt
 # secret_id_num_uses: how many times secret id can be used to get a fresh token
 
 # secret_id_ttl: how long secret id can be used to get a fresh token
+
+
+vault token capabilities /auth/approle/role/app
+
 
 
 ### Demo policy
