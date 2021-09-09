@@ -1,7 +1,7 @@
 ### Start container
 
 docker-compose down -v
-docker-compose --project-name demo up -d --build && ./setup-ssh-authentication.sh
+docker-compose up -d --build && ./setup-ssh-authentication.sh
 
 
 ### LOGIN TO CONTAINERS
@@ -135,3 +135,9 @@ vault write auth/approle/role/app secret_id_ttl=5m secret_id_num_uses=1 token_tt
 ### Demo policy
 
 # Orchestrator cannot fetch its own role and secret ids
+
+
+
+# docker inspect app -f "{{json .Config.Env}}" | jq
+
+# docker inspect vault -f "{{json .NetworkSettings.Networks}}" | jq
