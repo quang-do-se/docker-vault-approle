@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
-run_vault_container='docker-compose exec -T vault'
+run_vault_container='docker container exec -i vault'
 
-run_app_container='docker-compose exec -T app'
+run_app_container='docker container exec -i app'
 
-run_orchestrator_container='docker-compose exec -T orchestrator'
+run_orchestrator_container='docker container exec -i orchestrator'
 
 secret_path='hello-world'
 
