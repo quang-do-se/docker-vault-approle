@@ -8,7 +8,7 @@
   tasks:
     - name: Git checkout
       git:
-        repo: 'git@github.com:qdo-se/spring-vault.git'
+        repo: 'https://github.com/quang-do-se/spring-vault.git'
         dest: /home/orchestrator-user/spring-vault
         version: api
 

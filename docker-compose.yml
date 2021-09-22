@@ -27,7 +27,6 @@ services:
     container_name: orchestrator
     volumes:
       - ./orchestrator/files:/data/files
-      - ${HOME}/.ssh:/home/orchestrator-user/.ssh:ro
     environment:
       VAULT_ADDR: http://vault:8200
     networks:

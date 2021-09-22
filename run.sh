@@ -4,6 +4,8 @@ run_vault_container='docker-compose exec -T vault'
 
 run_app_container='docker-compose exec -T app'
 
+run_app_orchestrator='docker-compose exec -T orchestrator'
+
 secret_path='hello-world'
 
 policy_name='hello-world-policy'
@@ -18,64 +20,45 @@ ${run_vault_container} vault auth enable approle
 # Create secrets
 ${run_vault_container} vault kv put secret/"${secret_path}" PASSWORD1=12345 PASSWORD2=abcde
 
-# Create policy
+# Create role 'orchestrator'
+${run_vault_container} vault write auth/approle/role/orchestrator secret_id_ttl=120m token_ttl=60m token_max_ttl=120m
+
+# Create role 'app'
+${run_vault_container} vault write auth/approle/role/app secret_id_ttl=120m token_ttl=30s token_max_ttl=60m
+
+# Create a policy to read secret
 ${run_vault_container} vault policy write "${policy_name}" -<<EOF
 path "secret/data/${secret_path}" {
  capabilities = ["read", "list"]
 }
 EOF
 
-# Create role
-${run_vault_container} vault write auth/approle/role/${secret_path} secretid_ttl=120m token_ttl=60m token_max_tll=120m policies="${policy_name}"
+# Create a new policy for "orchestrator" role
+${run_vault_container} vault policy write orchestrator-policy -<<EOF
+path "auth/approle/role/app*" {
+ capabilities = ["create", "read", "update", "delete", "list"]
+}
+EOF
 
-# Generate role id
-role_id=$(${run_vault_container} vault read -field=role_id auth/approle/role/"${secret_path}"/role-id)
+# Grant policy to orchestrator role
+${run_vault_container} vault write auth/approle/role/orchestrator policies=orchestrator-policy
 
-# Generate secret id directly
-secret_id=$(${run_vault_container} vault write -force -field=secret_id auth/approle/role/"${secret_path}"/secret-id)
+# Grant policy to app role 
+${run_vault_container} vault write auth/approle/role/app policies=hello-world-policy
 
-# Generate wrapping token (wrapper for secret)
-wrapping_token=$(${run_vault_container} vault write -wrap-ttl=60s -force -field=wrapping_token auth/approle/role/"${secret_path}"/secret-id)
+# Generate role id for orchestrator role
+role_id=$(${run_vault_container} vault read -field=role_id auth/approle/role/orchestrator/role-id)
 
-
-
-### APP CONTAINER
-
-# Unwrap secret
-unwrapped_secred_id=$(${run_app_container} vault unwrap -field=secret_id "${wrapping_token}")
-
-# Request new token
-token=$(${run_app_container} vault write -field=token auth/approle/login role_id="${role_id}" secret_id="${unwrapped_secred_id}")
-
-# Store token
-${run_app_container} sh -c "echo ${token} > ~/.vault-token"
+# Generate secret id for orchestrator role
+secret_id=$(${run_vault_container} vault write -force -field=secret_id auth/approle/role/orchestrator/secret-id)
 
 
 
-### TEST RETRIEVING SECRETS
-echo
+### ORCHESTRATOR CONTAINER
 
-echo 'Quick test...'
-echo 'First password:' $(${run_app_container} vault kv get -field=PASSWORD1 secret/"${secret_path}")
-echo 'Second password:' $(${run_app_container} vault kv get -field=PASSWORD2 secret/"${secret_path}")
-echo
+# Login
+${run_orchestrator_container} vault login $(vault write -field=token auth/approle/login role_id="${role_id}" secret_id="${secret_id}")
 
-echo "Role id: ${role_id}"
-echo "Secret id: ${secret_id}"
-echo "Wrapping token: ${wrapping_token}"
-echo "Unwrapped secred id: ${secret_id}"
-echo "Token: ${token}"
-echo
+# Run ansible playbook
 
-
-
-### RETRIEVE SECRETS WITH SPRING VAULT
-echo "Retrieving secrets with Spring Vault. This may take a while..."
-
-docker-compose exec -T \
-               -e VAULT_URI='http://vault:8200' \
-               -e VAULT_APP_ROLE_ROLE_ID="${role_id}" \
-               -e VAULT_APP_ROLE_SECRET_ID="${secret_id}" \
-               -w /projects/spring-vault \
-               app \
-               gradle clean run
+${run_orchestrator_container} cd /data/files && ansible-playbook ansible-playbook-deploy-app.yml --inventory=inventory.yml

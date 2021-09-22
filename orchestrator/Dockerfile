@@ -68,7 +68,10 @@ RUN set -o errexit -o nounset \
 
 RUN set -eux; \
   groupadd --gid 999 --system orchestrator-group; \
-  useradd --uid 999 --system --shell /bin/bash --create-home --gid orchestrator-group orchestrator-user;
+  useradd --uid 999 --system --shell /bin/bash --create-home --gid orchestrator-group orchestrator-user; \
+  mkdir -p /home/orchestrator-user/.ssh; \
+  ssh-keygen -q -t ed25519 -N '' -f /home/orchestrator-user/.ssh <<<y >/dev/null 2>&1
+
 
 USER orchestrator-user
 WORKDIR /home/orchestrator-user

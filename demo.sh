@@ -90,7 +90,7 @@ path "secret/data/hello-world" {
 EOF
 
 
-# Create a new policy for "app" role
+# Create a new policy for "orchestrator" role
 vault policy write orchestrator-policy -<<EOF
 path "auth/approle/role/app*" {
  capabilities = ["create", "read", "update", "delete", "list"]
@@ -197,3 +197,12 @@ vault token capabilities /auth/approle/role/app
 # Split: cmd+d, cmd+shift+d
 
 # maximize, minimize: cmd+shift+enter
+
+
+
+
+# Generate wrapping token (wrapper for secret)
+# wrapping_token=$(${run_vault_container} vault write -wrap-ttl=60s -force -field=wrapping_token auth/approle/role/_path}"/secret-id)
+
+# Unwrap secret
+# unwrapped_secred_id=$(${run_app_container} vault unwrap -field=secret_id "${wrapping_token}")

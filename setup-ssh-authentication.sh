@@ -6,7 +6,7 @@ set -eu -o pipefail
 
 echo 'Copying orchestrator public keys...'
 
-public_key=$(docker-compose exec -T orchestrator cat /home/orchestrator-user/.ssh/id_rsa.pub)
+public_key=$(docker-compose exec -T orchestrator cat /home/orchestrator-user/.ssh/id_ed25519.pub)
 
 
 
