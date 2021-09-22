@@ -4,6 +4,12 @@ set -eu -o pipefail
 
 
 
+echo 'Creating orchestrator private/public key pair...'
+
+docker-compose exec -T orchestrator bash -c "ssh-keygen -q -t ed25519 -N '' -f /home/orchestrator-user/.ssh/id_ed25519 <<<y >/dev/null 2>&1"
+
+
+
 echo 'Copying orchestrator public keys...'
 
 public_key=$(docker-compose exec -T orchestrator cat /home/orchestrator-user/.ssh/id_ed25519.pub)
