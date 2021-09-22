@@ -4,7 +4,7 @@ run_vault_container='docker-compose exec -T vault'
 
 run_app_container='docker-compose exec -T app'
 
-run_app_orchestrator='docker-compose exec -T orchestrator'
+run_orchestrator_container='docker-compose exec -T orchestrator'
 
 secret_path='hello-world'
 
@@ -52,13 +52,18 @@ role_id=$(${run_vault_container} vault read -field=role_id auth/approle/role/orc
 # Generate secret id for orchestrator role
 secret_id=$(${run_vault_container} vault write -force -field=secret_id auth/approle/role/orchestrator/secret-id)
 
-
+echo "${role_id}"
+echo "${secret_id}"
 
 ### ORCHESTRATOR CONTAINER
 
-# Login
-${run_orchestrator_container} vault login $(vault write -field=token auth/approle/login role_id="${role_id}" secret_id="${secret_id}")
+# Login as orchestrator role
+token=$(${run_orchestrator_container} vault write -field=token auth/approle/login role_id="${role_id}" secret_id="${secret_id}")
+
+echo "${token}"
+
+${run_orchestrator_container} vault login "${token}"
 
 # Run ansible playbook
 
-${run_orchestrator_container} cd /data/files && ansible-playbook ansible-playbook-deploy-app.yml --inventory=inventory.yml
+${run_orchestrator_container} bash -c 'cd /data/files && ansible-playbook ansible-playbook-deploy-app.yml --inventory=inventory.yml'
