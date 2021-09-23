@@ -52,7 +52,7 @@
         export TZ=America/Denver
 
         nohup /usr/local/openjdk-8/bin/java \
-          -jar /app/spring-vault-1.0-SNAPSHOT.jar \
+          -jar /home/app/spring-vault-1.0-SNAPSHOT.jar \
           --spring.config.location=file:/secrets/vault.properties \
           --spring.profiles.active=development \
-          --logging.file.path=/app/logs &
+          --logging.file.path=/home/app/logs &

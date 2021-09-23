@@ -2,9 +2,9 @@
 
 run_vault_container='docker container exec -i vault'
 
-run_app_container='docker container exec -i app'
+run_app_container='docker container exec -i -u app app'
 
-run_orchestrator_container='docker container exec -i orchestrator'
+run_orchestrator_container='docker container exec -i -u orchestrator orchestrator'
 
 secret_path='hello-world'
 

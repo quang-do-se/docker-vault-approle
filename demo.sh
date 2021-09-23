@@ -10,7 +10,7 @@ docker container exec -it vault /bin/sh
 
 # By default, docker-compose exec attach a terminal for us, so no need for -it
 
-docker container exec -it orchestrator /bin/bash
+docker container exec -it -u orchestrator orchestrator /bin/bash
 
 docker container exec -it -u app app /bin/bash
 
