@@ -68,14 +68,13 @@ RUN set -o errexit -o nounset \
 
 RUN set -eux; \
   groupadd --gid 999 --system orchestrator; \
-  useradd --uid 999 --system --shell /bin/bash --create-home --gid orchestrator orchestrator; \
-  mkdir -p /data; \
-  chown -R orchestrator:orchestrator /data
-
+  useradd --uid 999 --system --shell /bin/bash --create-home --gid orchestrator orchestrator;
 
 USER orchestrator
 WORKDIR /home/orchestrator
 
 RUN mkdir -p /home/orchestrator/.ssh
+
+ENTRYPOINT ["/data/files/entrypoint.sh"]
 
 CMD ["tail", "-f", "/dev/null"]

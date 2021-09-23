@@ -37,7 +37,7 @@
     - name: Send jar to app container
       ansible.builtin.copy:
         src: /home/orchestrator/spring-vault/build/libs/spring-vault-1.0-SNAPSHOT.jar
-        dest: /app
+        dest: /home/app
 
     - name: Stop running application
       shell: |

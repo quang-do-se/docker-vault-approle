@@ -67,10 +67,7 @@ RUN set -eux; \
   groupadd --gid 999 --system app; \
   useradd --uid 999 --system --shell /bin/bash --create-home --gid app app; \
   mkdir -p /home/app/.ssh; \
-  mkdir -p /app; \
-  mkdir -p /data; \
-  chown "app:app" -R /home/app /app; \
-  chown -R "app:app" /data
+  chown "app:app" -R /home/app; \
 
 COPY ./configs/ssh_config /etc/ssh/ssh_config
 COPY ./configs/sshd_config /etc/ssh/sshd_config
