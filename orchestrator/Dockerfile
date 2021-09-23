@@ -9,7 +9,7 @@ RUN apt-get update \
   curl \
   gnupg \
   rsync \
-  sudo \
+  gosu \
   unzip \
   vim \
   openssh-client \
@@ -67,15 +67,15 @@ RUN set -o errexit -o nounset \
 
 
 RUN set -eux; \
-  groupadd --gid 999 --system orchestrator-group; \
-  useradd --uid 999 --system --shell /bin/bash --create-home --gid orchestrator-group orchestrator-user; \
+  groupadd --gid 999 --system orchestrator; \
+  useradd --uid 999 --system --shell /bin/bash --create-home --gid orchestrator orchestrator; \
   mkdir -p /data; \
-  chown -R orchestrator-user:orchestrator-group /data
+  chown -R orchestrator:orchestrator /data
 
 
-USER orchestrator-user
-WORKDIR /home/orchestrator-user
+USER orchestrator
+WORKDIR /home/orchestrator
 
-RUN mkdir -p /home/orchestrator-user/.ssh
+RUN mkdir -p /home/orchestrator/.ssh
 
 CMD ["tail", "-f", "/dev/null"]

@@ -12,12 +12,12 @@ docker container exec -it vault /bin/sh
 
 docker container exec -it orchestrator /bin/bash
 
-docker container exec -it -u app-user app /bin/bash
+docker container exec -it -u app app /bin/bash
 
 
 # Test ssh
 hostname
-ssh app-user@app
+ssh app@app
 hostname
 
 

@@ -9,12 +9,12 @@
     - name: Git checkout
       git:
         repo: 'https://github.com/quang-do-se/spring-vault.git'
-        dest: /home/orchestrator-user/spring-vault
+        dest: /home/orchestrator/spring-vault
         version: api
 
     - name: Gradle build
       shell: |
-        cd /home/orchestrator-user/spring-vault
+        cd /home/orchestrator/spring-vault
         gradle clean assemble
 
     - name: Generate app's role id and secret id 
@@ -36,7 +36,7 @@
     
     - name: Send jar to app container
       ansible.builtin.copy:
-        src: /home/orchestrator-user/spring-vault/build/libs/spring-vault-1.0-SNAPSHOT.jar
+        src: /home/orchestrator/spring-vault/build/libs/spring-vault-1.0-SNAPSHOT.jar
         dest: /app
 
     - name: Stop running application

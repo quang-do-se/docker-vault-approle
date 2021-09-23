@@ -2,4 +2,4 @@ app_group:
   hosts:
     app
   vars:
-    ansible_user: app-user
+    ansible_user: app

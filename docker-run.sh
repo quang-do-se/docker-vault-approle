@@ -19,7 +19,8 @@ docker container run -d \
 docker build -t demo/orchestrator ./orchestrator
 
 docker container run -d \
-       -u orchestrator-user \
+       -e LOCAL_UID=$(id -u $USER) \
+       -e LOCAL_GID=$(id -g $USER) \
        -e 'VAULT_ADDR=http://vault:8200' \
        -v ${BASEDIR}/orchestrator/files:/data/files \
        --name orchestrator \
@@ -30,6 +31,8 @@ docker container run -d \
 docker build -t demo/app ./app
 
 docker container run -d \
+       -e LOCAL_UID=$(id -u $USER) \
+       -e LOCAL_GID=$(id -g $USER) \
        -e 'VAULT_ADDR=http://vault:8200' \
        -v ${BASEDIR}/app/configs:/data/configs \
        -v ${BASEDIR}/app/files:/data/files \
