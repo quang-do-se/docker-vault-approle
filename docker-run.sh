@@ -1,3 +1,4 @@
+# Create containers and network
 
 docker network create vault-network
 
@@ -39,3 +40,11 @@ docker container run -d \
        --network vault-network \
        --mount type=tmpfs,destination=/secrets \
        demo/app
+
+
+
+# Stop containers and remove network
+
+# docker container stop app orchestrator vault
+# docker container rm app orchestrator vault
+# docker network rm vault-network
