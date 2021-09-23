@@ -1,3 +1,7 @@
+# Purpose
+
+- This project serves as an interactive learning for `Vault Approle` and to an extend `Docker` container.
+
 # Installation
 
 - If you don't have Docker, please install it: https://docs.docker.com/get-docker/
@@ -78,6 +82,24 @@ ssh app@app
 - Type `hostname` in `orchestrator` container again, now you should see the hostname changes to `app`'s hostname
 
 ## Create secrets, roles, policies in Vault
+
+### Create secrets
+
+- In `vault` container, run:
+
+``` shell
+vault kv put secret/hello-world PASSWORD1=12345 PASSWORD2=abcde
+
+# If you want to see the actual API call made by vault:
+vault kv put -output-curl-string secret/hello-world PASSWORD1=12345 PASSWORD2=abcde
+```
+- *Note*: everything in Vault is treated as a `path` or a resource. You will see that applies to `role` and `policy` as well when we create them.
+
+- *Note*: this step can be done in Vault UI at http://localhost:8200 (Root token is `myroot`)
+
+### Enable approle
+
+
 
 # Cleanup
 

@@ -27,7 +27,7 @@ hostname
 
 vault kv put secret/hello-world PASSWORD1=12345 PASSWORD2=abcde
 a
-vault kv put -output-curl-string secret/hello-world PASSWORD1=12345 PASSWORD2=abcde0
+vault kv put -output-curl-string secret/hello-world PASSWORD1=12345 PASSWORD2=abcde
 
 
 vault auth enable approle
