@@ -63,18 +63,17 @@ docker-compose logs
 docker container exec -it vault /bin/sh
 
 # Terminal 2
-docker container exec -it --user app app /bin/bash
-
-# Terminal 3
 docker container exec -it --user orchestrator orchestrator /bin/bash
 
+# Terminal 3
+docker container exec -it --user app app /bin/bash
 ```
 
 - Then run command `hostname` in each terminal
 
 - You should see 3 different hostnames since we're in 3 different containers
 
-- Verify we can SSH into `app` container from `orchestrator` container
+- Verify we can SSH into `app` container from `orchestrator` container:
 
 ``` shell
 # In `orchestrator` container
@@ -123,7 +122,7 @@ vault auth enable approle
 vault write auth/approle/role/orchestrator secret_id_ttl=120m token_ttl=60m token_max_ttl=120m
 
 # Create role 'app'
-vault write auth/approle/role/app secret_id_ttl=120m token_ttl=10s token_max_ttl=60m
+vault write auth/approle/role/app secret_id_ttl=120m token_ttl=60m token_max_ttl=60m
 ```
 
 - **secret_id_ttl**: how long a secret id can be used to get a fresh token before expired.
@@ -198,6 +197,8 @@ vault write -force -field=secret_id auth/approle/role/app/secret-id
 # Please copy Role ID and Secret ID to your clipboard or notepad, we'll use them later
 ```
 
+- **Note**: You can think of Role ID as a username and Secret ID as a password.
+
 ## Login to AppRole with Role IDs and Secret IDs
 
 - We are done with our Vault setup. Now let's confirm if our new roles have the correct permission.
@@ -247,11 +248,6 @@ rm ~/.vault-token
 - In `orchestrator` container, run:
 
 ``` shell
-# Normally, we encrypt these values in orchestrator server
-
-export VAULT_ROLE_ID="<orchestrator-role-id>"
-export VAULT_SECRET_ID="<orchestrator-secret-id>"
-
 cd /data/ansible
 
 ansible-playbook ansible-playbook-deploy-app.yml --inventory=inventory.yml
@@ -263,11 +259,32 @@ ansible-playbook ansible-playbook-deploy-app.yml --inventory=inventory.yml
 tail -n 1000 -f /home/app/logs/spring-vault.log
 ```
 
-- You should see the token is refreshed every 10 seconds
-
 - Go to http://localhost:8888/ to see all the secrets and app's Role ID and Secret ID
 
 - Try to add another secret in Vault and see if the API is updated
+
+
+
+### Optional: Change token_ttl and see how the log changes
+
+- In `vault` container, run:
+
+``` shell
+vault write auth/approle/role/app secret_id_ttl=120m token_ttl=10s token_max_ttl=60m
+```
+
+- In `orchestrator` container, redeploy the application:
+
+``` shell
+cd /data/ansible
+
+ansible-playbook ansible-playbook-deploy-app.yml --inventory=inventory.yml
+```
+- In `app` container, check the application's log:
+
+``` shell
+tail -n 1000 -f /home/app/logs/spring-vault.log
+```
 
 # Cleanup
 

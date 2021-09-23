@@ -21,10 +21,12 @@
         cd /home/orchestrator/spring-vault
         gradle clean assemble
 
-    - name: Generate app's role id and secret id 
+    - name: Login to AppRole
       ansible.builtin.shell: |
         vault login $(vault write -field=token auth/approle/login role_id="{{ vault_role_id }}" secret_id="{{ vault_secret_id }}")
         
+    - name: Generate app's role id and secret id
+      ansible.builtin.shell: |
         echo vault.app-role.role-id=$(vault read -field=role_id auth/approle/role/app/role-id) > /secrets/vault.properties
         echo vault.app-role.secret-id=$(vault write -force -field=secret_id auth/approle/role/app/secret-id) >> /secrets/vault.properties
         echo vault.uri=http://vault:8200 >> /secrets/vault.properties
