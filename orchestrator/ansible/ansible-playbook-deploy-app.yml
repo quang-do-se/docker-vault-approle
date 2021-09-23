@@ -23,7 +23,9 @@
 
     - name: Login to AppRole
       ansible.builtin.shell: |
-        vault login $(vault write -field=token auth/approle/login role_id="{{ vault_role_id }}" secret_id="{{ vault_secret_id }}")
+        if [ ! -z "{{ vault_role_id }}" ] && [ ! -z "{{ vault_secret_id }}" ]; then
+          vault login $(vault write -field=token auth/approle/login role_id="{{ vault_role_id }}" secret_id="{{ vault_secret_id }}")
+        fi
         
     - name: Generate app's role id and secret id
       ansible.builtin.shell: |

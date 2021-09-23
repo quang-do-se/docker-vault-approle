@@ -208,13 +208,15 @@ vault write -force -field=secret_id auth/approle/role/app/secret-id
 - In `orchestrator` container, run:
 
 ``` shell
-vault login $(vault write -field=token auth/approle/login role_id="<orchestrator-role-id>" secret_id="<orchestrator-secret-id>")
+# TODO: replace empty strings
+vault login $(vault write -field=token auth/approle/login role_id="" secret_id="")
 ```
 
 - In `app` container, run:
 
 ``` shell
-vault login $(vault write -field=token auth/approle/login role_id="<app-role-id>" secret_id="<app-secret-id>")
+# TODO: replace empty strings
+vault login $(vault write -field=token auth/approle/login role_id="" secret_id="")
 ```
 
 - You should see a success message. If not, some steps may be missing or not done correctly.
