@@ -2,6 +2,8 @@
 
 - This project serves as an interactive learning for `HashiCorp Vault's AppRole` and to an extend `Docker` container.
 
+# Diagram
+
 # Installation
 
 - If you don't have Docker, please install it: https://docs.docker.com/get-docker/
@@ -104,7 +106,7 @@ vault kv get -field=PASSWORD1 secret/hello-world
 vault kv get -field=PASSWORD2 secret/hello-world
 ```
 
-### Enable AppRole authentication method 
+### Enable AppRole authentication method
 
 ``` shell
 vault auth enable approle
@@ -119,7 +121,7 @@ vault auth enable approle
 vault write auth/approle/role/orchestrator secret_id_ttl=120m token_ttl=60m token_max_ttl=120m
 
 # Create role 'app'
-vault write auth/approle/role/app secret_id_ttl=120m token_ttl=15s token_max_ttl=60m
+vault write auth/approle/role/app secret_id_ttl=120m token_ttl=10s token_max_ttl=60m
 ```
 
 - **secret_id_ttl**: how long a secret id can be used to get a fresh token before expired.
@@ -135,7 +137,7 @@ vault write auth/approle/role/app secret_id_ttl=120m token_ttl=15s token_max_ttl
 ``` shell
 vault policy write hello-world-policy -<<EOF
 path "secret/data/hello-world" {
- capabilities = ["read", "list"]
+capabilities = ["read", "list"]
 }
 EOF
 ```
@@ -145,7 +147,7 @@ EOF
 ``` shell
 vault policy write orchestrator-policy -<<EOF
 path "auth/approle/role/app*" {
- capabilities = ["create", "read", "update", "delete", "list"]
+capabilities = ["create", "read", "update", "delete", "list"]
 }
 EOF
 ```
@@ -169,8 +171,6 @@ vault write auth/approle/role/app policies=hello-world-policy
 ```
 
 ### Generate Role IDs and Secret IDs
-
-- We are done with our Vault setup. Now let's confirm if our new roles have the correct permission:
 
 - In `vault` container, generate Role ID and Secret ID for `orchestrator` role:
 
@@ -198,7 +198,74 @@ vault write -force -field=secret_id auth/approle/role/app/secret-id
 
 ## Login to AppRole with Role IDs and Secret IDs
 
+- We are done with our Vault setup. Now let's confirm if our new roles have the correct permission.
 
+- **Note**: # Please reference your notepad for Role ID and Secret ID you saved in [this section](### Generate Role IDs and Secret IDs)
+
+- In `orchestrator` container, run:
+
+``` shell
+vault login $(vault write -field=token auth/approle/login role_id="<orchestrator-role-id>" secret_id="<orchestrator-secret-id>")
+```
+
+- In `app` container, run:
+
+``` shell
+vault login $(vault write -field=token auth/approle/login role_id="<app-role-id>" secret_id="<app-secret-id>")
+```
+
+- You should see a success message. If not, some steps may be missing and not done correctly.
+
+## Verify permission
+
+- In `orchestrator` container, verify if we can generate Roke ID for `app` role:
+
+``` shell
+vault read -field=role_id auth/approle/role/app/role-id
+
+# However, these will fail. Why?
+vault kv get -field=PASSWORD1 secret/hello-world
+vault kv get -field=PASSWORD2 secret/hello-world
+```
+
+- In `app` container, verify if we can read secrets in "secret/data/hello-world"
+
+``` shell
+vault kv get -field=PASSWORD1 secret/hello-world
+vault kv get -field=PASSWORD2 secret/hello-world
+
+# After verify everything's good, logout
+rm ~/.vault-token
+```
+
+## Run Ansible playbook to build and deploy Java application
+
+- **Note**: # Please reference your notepad for Role ID and Secret ID you saved in [this section](### Generate Role IDs and Secret IDs)
+
+- In `orchestrator` container, run:
+
+``` shell
+# Normally, we encrypt these values in orchestrator server
+
+export VAULT_ROLE_ID="<orchestrator-role-id>"
+export VAULT_SECRET_ID="<orchestrator-secret-id>"
+
+cd /data/ansible
+
+ansible-playbook ansible-playbook-deploy-app.yml --inventory=inventory.yml
+```
+
+- In `app` container, check the application's log:
+
+``` shell
+tail -n 1000 -f /home/app/logs/spring-vault.log
+```
+
+- You should see the token is refreshed every 10 seconds
+
+- Go to http://localhost:8888/ to see all the secrets and app's Role ID and Secret ID
+
+- Try to add another secret in Vault and see if the API is updated
 
 # Cleanup
 

@@ -30,7 +30,7 @@ ${run_vault_container} vault kv put secret/"${secret_path}" PASSWORD1=12345 PASS
 ${run_vault_container} vault write auth/approle/role/orchestrator secret_id_ttl=120m token_ttl=60m token_max_ttl=120m
 
 # Create role 'app'
-${run_vault_container} vault write auth/approle/role/app secret_id_ttl=120m token_ttl=30s token_max_ttl=60m
+${run_vault_container} vault write auth/approle/role/app secret_id_ttl=120m token_ttl=10s token_max_ttl=60m
 
 # Create a policy to read secret
 ${run_vault_container} vault policy write "${policy_name}" -<<EOF
