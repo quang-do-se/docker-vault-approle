@@ -122,6 +122,36 @@ vault write auth/approle/role/orchestrator secret_id_ttl=120m token_ttl=60m toke
 vault write auth/approle/role/app secret_id_ttl=120m token_ttl=15s token_max_ttl=60m
 ```
 
+- **secret_id_ttl**: how long a secret id can be used to get a fresh token before expired.
+
+- **token_ttl**: how long a generated token can be used to retrieve secrets before expired. A generated token can be renewed if **token_max_ttl** is not expired or exceeded.
+
+- **token_max_ttl**: The maximum lifetime for generated tokens. This current value of this will be referenced at renewal time.
+
+### Create policies
+
+- In `vault` container, run:
+
+``` shell
+# Create a policy to read "secret/data/hello-world""
+vault policy write hello-world-policy -<<EOF
+path "secret/data/hello-world" {
+ capabilities = ["read", "list"]
+}
+EOF
+
+
+# Create a new policy for "orchestrator" role, which manages "app" role
+vault policy write orchestrator-policy -<<EOF
+path "auth/approle/role/app*" {
+ capabilities = ["create", "read", "update", "delete", "list"]
+}
+EOF
+```
+
+- **Note**: this step can be done in Vault UI at http://localhost:8200 (Root token is `myroot`)
+
+
 
 # Cleanup
 

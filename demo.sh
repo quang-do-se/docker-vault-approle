@@ -80,7 +80,7 @@ vault kv get -field=PASSWORD1 secret/hello-world
 
 ### VAULT CONTAINER
 
-# Create a policy to read secret
+# Create a policy to read "secret/data/hello-world""
 vault policy write hello-world-policy -<<EOF
 path "secret/data/hello-world" {
  capabilities = ["read", "list"]
