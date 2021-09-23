@@ -2,8 +2,8 @@
 
   # Orchestrator's vault credentials
   vars:
-    vault_role_id: "{{ lookup('env', 'VAULT_ROLE_ID') }}"
-    vault_secret_id: "{{ lookup('env', 'VAULT_SECRET_ID') }}"
+    vault_role_id: "{{ lookup('env', 'VAULT_ROLE_ID', errors='ignore') }}"
+    vault_secret_id: "{{ lookup('env', 'VAULT_SECRET_ID', errors='ignore') }}"
 
   tasks:
     - name: Git checkout

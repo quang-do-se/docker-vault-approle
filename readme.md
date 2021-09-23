@@ -208,14 +208,14 @@ vault write -force -field=secret_id auth/approle/role/app/secret-id
 - In `orchestrator` container, run:
 
 ``` shell
-# TODO: replace empty strings
+# TODO: replace empty strings with orchestrator's Role ID and Secret ID
 vault login $(vault write -field=token auth/approle/login role_id="" secret_id="")
 ```
 
 - In `app` container, run:
 
 ``` shell
-# TODO: replace empty strings
+# TODO: replace empty strings with app's Role ID and Secret ID
 vault login $(vault write -field=token auth/approle/login role_id="" secret_id="")
 ```
 

@@ -70,3 +70,13 @@ ${run_orchestrator_container} vault login "${token}"
 # Run ansible playbook
 
 ${run_orchestrator_container} bash -c 'cd /data/ansible && ansible-playbook ansible-playbook-deploy-app.yml --inventory=inventory.yml'
+
+
+## Alternative way to run orchestrator
+
+# docker container exec -i \
+#        --user orchestrator \
+#        -e VAULT_ROLE_ID="${role_id}" \
+#        -e VAULT_SECRET_ID="${secret_id}" \
+#        orchestrator \
+#        bash -c 'cd /data/ansible && ansible-playbook ansible-playbook-deploy-app.yml --inventory=inventory.yml'
