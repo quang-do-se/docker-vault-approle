@@ -31,7 +31,7 @@
   tasks:
     - name: Send vault.properties to app container
       ansible.builtin.copy:
-        src: /tmp/vault.properties
+        src: /secrets/vault.properties
         dest: /home/app
     
     - name: Send jar to app container
@@ -53,6 +53,6 @@
 
         nohup /usr/local/openjdk-8/bin/java \
           -jar /home/app/spring-vault-1.0-SNAPSHOT.jar \
-          --spring.config.location=file:/secrets/vault.properties \
+          --spring.config.location=file:/home/app/vault.properties \
           --spring.profiles.active=development \
-          --logging.file.path=/home/app/logs &    
+          --logging.file.path=/home/app/logs &
