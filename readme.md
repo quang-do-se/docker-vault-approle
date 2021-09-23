@@ -4,6 +4,8 @@
 
 # Diagram
 
+- ![Overview of our setup](diagram.png)
+
 # Installation
 
 - If you don't have Docker, please install it: https://docs.docker.com/get-docker/
