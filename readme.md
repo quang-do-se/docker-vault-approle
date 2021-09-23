@@ -231,6 +231,8 @@ vault read -field=role_id auth/approle/role/app/role-id
 # However, these will fail. Why?
 vault kv get -field=PASSWORD1 secret/hello-world
 vault kv get -field=PASSWORD2 secret/hello-world
+
+vault read -field=role_id auth/approle/role/orchestrator/role-id
 ```
 
 - In `app` container, verify if we can read secrets in "secret/data/hello-world"
