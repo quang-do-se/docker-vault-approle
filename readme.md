@@ -1,6 +1,6 @@
 # Purpose
 
-- This project serves as an interactive learning for `Vault Approle` and to an extend `Docker` container.
+- This project serves as an interactive learning for `HashiCorp Vault's AppRole` and to an extend `Docker` container.
 
 # Installation
 
@@ -97,8 +97,30 @@ vault kv put -output-curl-string secret/hello-world PASSWORD1=12345 PASSWORD2=ab
 
 - *Note*: this step can be done in Vault UI at http://localhost:8200 (Root token is `myroot`)
 
-### Enable approle
+- Confirm we can retrieve secrets
 
+``` shell
+vault kv get -field=PASSWORD1 secret/hello-world
+vault kv get -field=PASSWORD2 secret/hello-world
+```
+
+### Enable AppRole authentication method 
+
+``` shell
+vault auth enable approle
+```
+
+### Create roles
+
+- In `vault` container, run:
+
+``` shell
+# Create role 'orchestrator'
+vault write auth/approle/role/orchestrator secret_id_ttl=120m token_ttl=60m token_max_ttl=120m
+
+# Create role 'app'
+vault write auth/approle/role/app secret_id_ttl=120m token_ttl=15s token_max_ttl=60m
+```
 
 
 # Cleanup
