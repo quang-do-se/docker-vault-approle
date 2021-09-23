@@ -282,7 +282,7 @@ tail -n 1000 -f /home/app/logs/spring-vault.log
 
 ### Extra: Change token_ttl and see how the log changes
 
-- In `vault` container, run:
+- In `vault` container, run this command to update `token_ttl=10s`: 
 
 ``` shell
 vault write auth/approle/role/app secret_id_ttl=120m token_ttl=10s token_max_ttl=60m
@@ -316,7 +316,7 @@ docker-compose down -v
 ``` shell
 docker-compose up -d --build
 
-./run
+./run.sh
 ```
 
 # References
