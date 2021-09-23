@@ -22,10 +22,10 @@ docker container run -d \
        -e LOCAL_UID=$(id -u $USER) \
        -e LOCAL_GID=$(id -g $USER) \
        -e 'VAULT_ADDR=http://vault:8200' \
-       -v ${BASEDIR}/orchestrator/files:/data/files \
        -w /home/orchestrator \
        --name orchestrator \
        --network vault-network \
+       --mount type=tmpfs,destination=/secrets \
        demo/orchestrator
 
 
@@ -39,7 +39,6 @@ docker container run -d \
        -w /home/app \
        --name app \
        --network vault-network \
-       --mount type=tmpfs,destination=/secrets \
        demo/app
 
 

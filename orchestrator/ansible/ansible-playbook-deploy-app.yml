@@ -21,9 +21,9 @@
       shell: |
         vault login $(vault write -field=token auth/approle/login role_id="{{ vault_role_id }}" secret_id="{{ vault_secret_id }}")
         
-        echo vault.app-role.role-id=$(vault read -field=role_id auth/approle/role/app/role-id) > /tmp/vault.properties
-        echo vault.app-role.secret-id=$(vault write -force -field=secret_id auth/approle/role/app/secret-id) >> /tmp/vault.properties
-        echo vault.uri=http://vault:8200 >> /tmp/vault.properties
+        echo vault.app-role.role-id=$(vault read -field=role_id auth/approle/role/app/role-id) > /secrets/vault.properties
+        echo vault.app-role.secret-id=$(vault write -force -field=secret_id auth/approle/role/app/secret-id) >> /secrets/vault.properties
+        echo vault.uri=http://vault:8200 >> /secrets/vault.properties
       no_log: true
 
 - hosts: app_group
@@ -32,7 +32,7 @@
     - name: Send vault.properties to app container
       ansible.builtin.copy:
         src: /tmp/vault.properties
-        dest: /secrets
+        dest: /home/app
     
     - name: Send jar to app container
       ansible.builtin.copy:
@@ -55,4 +55,4 @@
           -jar /home/app/spring-vault-1.0-SNAPSHOT.jar \
           --spring.config.location=file:/secrets/vault.properties \
           --spring.profiles.active=development \
-          --logging.file.path=/home/app/logs &
+          --logging.file.path=/home/app/logs &    

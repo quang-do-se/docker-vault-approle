@@ -21,12 +21,12 @@ services:
     build:
       context: ./orchestrator
     container_name: orchestrator
-    volumes:
-      - ./orchestrator/ansible:/data/ansible
     environment:
       VAULT_ADDR: http://vault:8200
     networks:
       - vault-network
+    tmpfs:
+      - /secrets      
 
   app:
     build:
@@ -38,8 +38,6 @@ services:
       VAULT_ADDR: http://vault:8200
     networks:
       - vault-network
-    tmpfs:
-      - /secrets
 
 networks:
   vault-network:
