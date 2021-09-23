@@ -12,6 +12,10 @@
         dest: /home/orchestrator/spring-vault
         version: api
 
+    - name: Finished Git checkout
+      ansible.builtin.debug:
+        msg: Starting Gradle build...
+
     - name: Gradle build
       ansible.builtin.shell: |
         cd /home/orchestrator/spring-vault
