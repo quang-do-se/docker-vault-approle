@@ -2,8 +2,8 @@
 
 # Set up user with matching host's uid and gid (Linux specific issue)
 
-USER_ID=${LOCAL_UID:-9001}
-GROUP_ID=${LOCAL_GID:-9001}
+USER_ID=${LOCAL_UID:-9999}
+GROUP_ID=${LOCAL_GID:-9999}
 
 
 echo "UID: $USER_ID, GID: $GROUP_ID"

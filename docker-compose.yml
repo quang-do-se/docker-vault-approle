@@ -22,7 +22,7 @@ services:
       context: ./orchestrator
     container_name: orchestrator
     volumes:
-      - ./orchestrator/files:/data/files
+      - ./orchestrator/ansible:/data/ansible
     environment:
       VAULT_ADDR: http://vault:8200
     networks:
