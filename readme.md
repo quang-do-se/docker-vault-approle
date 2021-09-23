@@ -93,9 +93,9 @@ vault kv put secret/hello-world PASSWORD1=12345 PASSWORD2=abcde
 # If you want to see the actual API call made by vault:
 vault kv put -output-curl-string secret/hello-world PASSWORD1=12345 PASSWORD2=abcde
 ```
-- *Note*: everything in Vault is treated as a `path` or a resource. You will see that applies to `role` and `policy` as well when we create them.
+- **Note**: everything in Vault is treated as a `path` or a resource. You will see that applies to `role` and `policy` as well when we create them.
 
-- *Note*: this step can be done in Vault UI at http://localhost:8200 (Root token is `myroot`)
+- **Note**: this step can be done in Vault UI at http://localhost:8200 (Root token is `myroot`)
 
 - Confirm we can retrieve secrets
 
@@ -130,18 +130,19 @@ vault write auth/approle/role/app secret_id_ttl=120m token_ttl=15s token_max_ttl
 
 ### Create policies
 
-- In `vault` container, run:
+- In `vault` container, Create a policy called `hello-world-policy` to read secret in `secret/data/hello-world`:
 
 ``` shell
-# Create a policy to read "secret/data/hello-world""
 vault policy write hello-world-policy -<<EOF
 path "secret/data/hello-world" {
  capabilities = ["read", "list"]
 }
 EOF
+```
 
+- In `vault` container, create a new policy called `orchestrator-policy`, which manages `app` role:
 
-# Create a new policy for "orchestrator" role, which manages "app" role
+``` shell
 vault policy write orchestrator-policy -<<EOF
 path "auth/approle/role/app*" {
  capabilities = ["create", "read", "update", "delete", "list"]
@@ -150,6 +151,52 @@ EOF
 ```
 
 - **Note**: this step can be done in Vault UI at http://localhost:8200 (Root token is `myroot`)
+
+## Grant policies to AppRoles and generate Role IDs and Secret IDs
+
+### Grant policies
+
+- In `vault` container, grant `orchestrator` role with policy `orchestrator-policy`:
+
+``` shell
+vault write auth/approle/role/orchestrator policies=orchestrator-policy
+```
+
+- In `vault` container, grant `app` role with policy `hello-world-policy`:
+
+``` shell
+vault write auth/approle/role/app policies=hello-world-policy
+```
+
+### Generate Role IDs and Secret IDs
+
+- We are done with our Vault setup. Now let's confirm if our new roles have the correct permission:
+
+- In `vault` container, generate Role ID and Secret ID for `orchestrator` role:
+
+``` shell
+# Generate role id for 'orchestrator' role
+vault read -field=role_id auth/approle/role/orchestrator/role-id
+
+# Generate secret id for 'orchestrator' role
+vault write -force -field=secret_id auth/approle/role/orchestrator/secret-id
+
+# Please copy Role ID and Secret ID to your clipboard or notepad, we'll use them later
+```
+
+- In `vault` container, generate Role ID and Secret ID for `app` role:
+
+``` shell
+# Generate role id for 'app' role
+vault read -field=role_id auth/approle/role/app/role-id
+
+# Generate secret id for 'app' role
+vault write -force -field=secret_id auth/approle/role/app/secret-id
+
+# Please copy Role ID and Secret ID to your clipboard or notepad, we'll use them later
+```
+
+## Login to AppRole with Role IDs and Secret IDs
 
 
 
