@@ -200,7 +200,7 @@ vault write -force -field=secret_id auth/approle/role/app/secret-id
 
 - We are done with our Vault setup. Now let's confirm if our new roles have the correct permission.
 
-- **Note**: # Please reference your notepad for Role ID and Secret ID you saved in [this section](### Generate Role IDs and Secret IDs)
+- **Note**: Please reference your notepad for Role ID and Secret ID you saved in [this section](#Generate Role IDs and Secret IDs)
 
 - In `orchestrator` container, run:
 
@@ -214,7 +214,7 @@ vault login $(vault write -field=token auth/approle/login role_id="<orchestrator
 vault login $(vault write -field=token auth/approle/login role_id="<app-role-id>" secret_id="<app-secret-id>")
 ```
 
-- You should see a success message. If not, some steps may be missing and not done correctly.
+- You should see a success message. If not, some steps may be missing or not done correctly.
 
 ## Verify permission
 
@@ -234,13 +234,13 @@ vault kv get -field=PASSWORD2 secret/hello-world
 vault kv get -field=PASSWORD1 secret/hello-world
 vault kv get -field=PASSWORD2 secret/hello-world
 
-# After verify everything's good, logout
+# After verifying everything's good, logout
 rm ~/.vault-token
 ```
 
 ## Run Ansible playbook to build and deploy Java application
 
-- **Note**: # Please reference your notepad for Role ID and Secret ID you saved in [this section](### Generate Role IDs and Secret IDs)
+- **Note**: Please reference your notepad for Role ID and Secret ID you saved in [this section](#Generate Role IDs and Secret IDs)
 
 - In `orchestrator` container, run:
 
