@@ -234,7 +234,7 @@ vault login $(vault write -field=token auth/approle/login role_id="" secret_id="
 
 ## Verify permission
 
-- In `orchestrator` container, verify if we can generate Roke ID for `app` role:
+- In `orchestrator` container, verify if we can generate Role ID for `app` role:
 
 ``` shell
 vault read -field=role_id auth/approle/role/app/role-id
@@ -246,7 +246,7 @@ vault kv get -field=PASSWORD2 secret/hello-world
 vault read -field=role_id auth/approle/role/orchestrator/role-id
 ```
 
-- In `app` container, verify if we can read secrets in "secret/data/hello-world"
+- In `app` container, verify if we can read secrets in `secret/data/hello-world`
 
 ``` shell
 vault kv get -field=PASSWORD1 secret/hello-world
