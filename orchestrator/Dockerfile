@@ -65,16 +65,9 @@ RUN set -o errexit -o nounset \
   && echo "Testing Vault installation" \
   && vault --version
 
+COPY ./files/entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
 
-RUN set -eux; \
-  groupadd --gid 999 --system orchestrator; \
-  useradd --uid 999 --system --shell /bin/bash --create-home --gid orchestrator orchestrator;
-
-USER orchestrator
-WORKDIR /home/orchestrator
-
-RUN mkdir -p /home/orchestrator/.ssh
-
-ENTRYPOINT ["/data/files/entrypoint.sh"]
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
 CMD ["tail", "-f", "/dev/null"]

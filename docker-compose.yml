@@ -34,9 +34,6 @@ services:
     container_name: app
     ports:
       - "8888:8080"
-    volumes:
-      - ./app/configs:/data/configs
-      - ./app/files:/data/files
     environment:
       VAULT_ADDR: http://vault:8200
     networks:

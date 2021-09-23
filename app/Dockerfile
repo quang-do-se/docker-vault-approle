@@ -62,22 +62,13 @@ RUN set -o errexit -o nounset \
   && echo "Testing Vault installation" \
   && vault --version
 
-# Set up user
-RUN set -eux; \
-  groupadd --gid 999 --system app; \
-  useradd --uid 999 --system --shell /bin/bash --create-home --gid app app; \
-  mkdir -p /home/app/.ssh; \
-  chown "app:app" -R /home/app; \
+EXPOSE 22
 
 COPY ./configs/ssh_config /etc/ssh/ssh_config
 COPY ./configs/sshd_config /etc/ssh/sshd_config
 COPY ./files/entrypoint.sh /usr/local/bin/entrypoint.sh
 
 RUN chmod +x /usr/local/bin/entrypoint.sh
-
-EXPOSE 22
-
-WORKDIR /home/app
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
