@@ -38,7 +38,7 @@ docker-compose up -d --build
 ``` shell
 docker ps
 ```
-- If you don't see 3 containers running, there may be something wrong. Try:
+- If you don't see 3 containers running, there may be something wrong. Try to troubleshoot:
 
 ``` shell
 docker-compose logs
@@ -309,6 +309,14 @@ tail -n 1000 -f /home/app/logs/spring-vault.log
 
 ``` shell
 docker-compose down -v
+```
+
+# Run a complete demo in one command
+
+``` shell
+docker-compose up -d --build
+
+./run
 ```
 
 # References
