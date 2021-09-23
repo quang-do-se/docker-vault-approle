@@ -6,16 +6,14 @@ docker-compose up -d --build && ./setup-ssh-authentication.sh
 
 ### LOGIN TO CONTAINERS
 
-docker-compose exec vault /bin/sh
-
 docker container exec -it vault /bin/sh
 
 # By default, docker-compose exec attach a terminal for us, so no need for -it
 
+docker container exec -it orchestrator /bin/bash
 
-docker-compose exec orchestrator /bin/bash
+docker container exec -it -u app-user app /bin/bash
 
-docker-compose exec -u app-user app /bin/bash
 
 # Test ssh
 hostname

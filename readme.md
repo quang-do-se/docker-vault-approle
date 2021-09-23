@@ -20,7 +20,7 @@ cd docker-vault-approle
 
 docker-compose up -d --build
 
-./run.sh
+./setup-ssh-authentication.sh
 
 ```
 

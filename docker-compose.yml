@@ -46,7 +46,7 @@ services:
     networks:
       - vault-network
     tmpfs:
-      - /secrets:mode=440
+      - /secrets
 
 networks:
   vault-network:
