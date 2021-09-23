@@ -4,7 +4,7 @@
 
 # Diagram
 
-- ![Overview of our setup](diagram.png)
+![Overview of our setup](diagram.png)
 
 # Installation
 
