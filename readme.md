@@ -23,8 +23,6 @@ cd docker-vault-approle
 # This can take a long time for the first run
 docker-compose up -d --build
 
-./setup-ssh-authentication.sh
-
 ```
 
 - Confirm that you have 3 containers running in your local:
@@ -38,16 +36,30 @@ docker ps
 docker-compose logs
 ```
 
+- Set up SSH connection betwen `orchestrator` and `app` containers
+
+``` shell
+./setup-ssh-authentication.sh
+```
+
 ### Instructions for demo
 
-- Open separated 3 terminals so that we can see 3 containers at the same time
+- Open separated 3 terminals so that we can see 3 containers at the same time and type:
 
+``` shell
+hostname
+```
 
+- You should see 3 different names since we're in 3 different containers
 
+- Verify we can SSH into `app` container from `orchestrator` container
 
+``` shell
+# In `orchestrator` container
+ssh app@app
+```
 
-
-
+- Type `hostname` in `orchestrator` container, now you should see the hostname changes to `app`'s hostname
 
 ### Stop
 

@@ -12,13 +12,13 @@ public_key=$(docker container exec -i orchestrator cat /home/orchestrator/.ssh/i
 
 echo "Adding orchestrator public keys to app's authorized keys..."
 
-docker container exec -i -u app app sh -c "echo ${public_key} > /home/app/.ssh/authorized_keys"
+docker container exec -i --user app app sh -c "echo ${public_key} > /home/app/.ssh/authorized_keys"
 
 
 
 echo "Set password for app"
 
-docker container exec -i -u root app sh -c "echo 'app:app-pass' | chpasswd;"
+docker container exec -i --user root app sh -c "echo 'app:app-pass' | chpasswd;"
 
 
 

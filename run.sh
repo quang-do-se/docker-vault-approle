@@ -8,9 +8,9 @@ BASEDIR=$(cd -- "$(dirname -- "$0")" && pwd - P)
 
 run_vault_container='docker container exec -i vault'
 
-run_app_container='docker container exec -i -u app app'
+run_app_container='docker container exec -i --user app app'
 
-run_orchestrator_container='docker container exec -i -u orchestrator orchestrator'
+run_orchestrator_container='docker container exec -i --user orchestrator orchestrator'
 
 secret_path='hello-world'
 
