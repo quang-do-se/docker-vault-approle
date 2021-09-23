@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+BASEDIR=$(cd -- "$(dirname -- "$0")" && pwd - P)
+
+"${BASEDIR}"/setup-ssh-authentication.ssh
+
+
+
 run_vault_container='docker container exec -i vault'
 
 run_app_container='docker container exec -i -u app app'
