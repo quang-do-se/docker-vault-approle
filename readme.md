@@ -280,7 +280,7 @@ tail -n 1000 -f /home/app/logs/spring-vault.log
 
 
 
-### Optional: Change token_ttl and see how the log changes
+### Extra: Change token_ttl and see how the log changes
 
 - In `vault` container, run:
 
@@ -300,6 +300,10 @@ ansible-playbook ansible-playbook-deploy-app.yml --inventory=inventory.yml
 ``` shell
 tail -n 1000 -f /home/app/logs/spring-vault.log
 ```
+
+- Go to http://localhost:8888/
+
+- Observe the log, you should see the token freshed every 10 seconds
 
 # Cleanup
 
