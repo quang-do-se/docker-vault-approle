@@ -7,10 +7,6 @@ services:
     container_name: vault
     ports:
       - "8200:8200"
-    volumes:
-      - ./vault/logs:/data/logs
-      - ./vault/files:/data/files
-      - ./vault/configs:/data/configs
     cap_add:
       - IPC_LOCK
     environment:

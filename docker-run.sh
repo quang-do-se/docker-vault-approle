@@ -10,9 +10,6 @@ docker container run -d \
        -e 'VAULT_DEV_LISTEN_ADDRESS=0.0.0.0:8200' \
        -e 'VAULT_TOKEN=myroot' \
        -e 'VAULT_ADDR=http://127.0.0.1:8200' \
-       -v ${BASEDIR}/vault/logs:/data/logs \
-       -v ${BASEDIR}/vault/files:/data/files \
-       -v ${BASEDIR}/vault/configs:/data/configs \
        -p 8200:8200 \
        --name vault \
        --network vault-network \
@@ -22,6 +19,7 @@ docker container run -d \
 docker build -t demo/orchestrator ./orchestrator
 
 docker container run -d \
+       -u orchestrator-user \
        -e 'VAULT_ADDR=http://vault:8200' \
        -v ${BASEDIR}/orchestrator/files:/data/files \
        --name orchestrator \

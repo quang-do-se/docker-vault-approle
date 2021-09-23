@@ -17,8 +17,8 @@ RUN apt-get update \
   python3 \
   python3-pip \
   python3-setuptools \
-  && pip3 install --upgrade pip \
-  && pip3 install wheel setuptools ansible==2.10 \
+  && python3 -m pip install --upgrade pip \
+  && python3 -m pip install wheel setuptools ansible==2.10 \
   && ln -sf /usr/bin/python3 /usr/bin/python \
   && apt-get -y autoremove \
   && apt-get clean autoclean \
@@ -68,7 +68,9 @@ RUN set -o errexit -o nounset \
 
 RUN set -eux; \
   groupadd --gid 999 --system orchestrator-group; \
-  useradd --uid 999 --system --shell /bin/bash --create-home --gid orchestrator-group orchestrator-user;
+  useradd --uid 999 --system --shell /bin/bash --create-home --gid orchestrator-group orchestrator-user; \
+  mkdir -p /data; \
+  chown -R orchestrator-user:orchestrator-group /data
 
 
 USER orchestrator-user
