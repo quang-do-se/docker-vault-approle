@@ -7,18 +7,18 @@
 
   tasks:
     - name: Git checkout
-      git:
+      ansible.builtin.git:
         repo: 'https://github.com/quang-do-se/spring-vault.git'
         dest: /home/orchestrator/spring-vault
         version: api
 
     - name: Gradle build
-      shell: |
+      ansible.builtin.shell: |
         cd /home/orchestrator/spring-vault
         gradle clean assemble
 
     - name: Generate app's role id and secret id 
-      shell: |
+      ansible.builtin.shell: |
         vault login $(vault write -field=token auth/approle/login role_id="{{ vault_role_id }}" secret_id="{{ vault_secret_id }}")
         
         echo vault.app-role.role-id=$(vault read -field=role_id auth/approle/role/app/role-id) > /secrets/vault.properties
@@ -40,7 +40,7 @@
         dest: /home/app
 
     - name: Stop running application
-      shell: |
+      ansible.builtin.shell: |
         pid=$(ps aux | grep -i "spring-vault.*\.jar" | grep -v grep | awk '{print $2}')
         
         if ps -p "${pid}" > /dev/null; then
@@ -48,7 +48,7 @@
         fi
 
     - name: Start application
-      shell: |
+      ansible.builtin.shell: |
         export TZ=America/Denver
 
         nohup /usr/local/openjdk-8/bin/java \
