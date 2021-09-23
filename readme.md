@@ -84,6 +84,17 @@ ssh app@app
 
 - Type `hostname` in `orchestrator` container again, now you should see the hostname changes to `app`'s hostname
 
+``` shell
+# In `orchestrator` container
+hostname
+
+# verify that hostname changed to app's hostname
+
+# logout from SSH connection
+logout
+
+```
+
 ## Create secrets, roles, policies in Vault
 
 ### Create secrets
