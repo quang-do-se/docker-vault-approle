@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+set -eux
 
 echo 'Creating orchestrator private/public key pair...'
 

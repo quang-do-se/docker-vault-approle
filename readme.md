@@ -1,4 +1,4 @@
-### Installation
+# Installation
 
 - If you don't have Docker, please install it: https://docs.docker.com/get-docker/
 
@@ -10,7 +10,7 @@ docker-compose --version
 
 - If you have Docker Desktop, you don't need to do anything. Otherwise, please follow this instruction to install: https://docs.docker.com/compose/install/
 
-### Run
+# Run
 
 - To run this project, run following commands:
 
@@ -42,32 +42,50 @@ docker-compose logs
 ./setup-ssh-authentication.sh
 ```
 
-### Instructions for demo
+# Instructions for demo
 
-- Open separated 3 terminals so that we can see 3 containers at the same time and type:
+## Confirm hostnames and verify SSH connection
+
+- Open separated 3 terminals so that we can see 3 containers at the same time.
+
+- Run following commands for each terminal:
 
 ``` shell
-hostname
+# Terminal 1
+docker container exec -it vault /bin/sh
+
+# Terminal 2
+docker container exec -it --user app app /bin/bash
+
+# Terminal 3
+docker container exec -it --user orchestrator orchestrator /bin/bash
+
 ```
 
-- You should see 3 different names since we're in 3 different containers
+- Then run command `hostname` in each terminal
+
+- You should see 3 different hostnames since we're in 3 different containers
 
 - Verify we can SSH into `app` container from `orchestrator` container
 
 ``` shell
 # In `orchestrator` container
 ssh app@app
+
+# Type 'yes' for prompt
 ```
 
-- Type `hostname` in `orchestrator` container, now you should see the hostname changes to `app`'s hostname
+- Type `hostname` in `orchestrator` container again, now you should see the hostname changes to `app`'s hostname
 
-### Stop
+## Create secrets, roles, policies in Vault
+
+# Cleanup
 
 ``` shell
 docker-compose down -v
 ```
 
-### References
+# References
 
 - https://www.hashicorp.com/blog/authenticating-applications-with-vault-approle
 - https://learn.hashicorp.com/tutorials/vault/approle
