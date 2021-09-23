@@ -2,7 +2,7 @@
 
 BASEDIR=$(cd -- "$(dirname -- "$0")" && pwd - P)
 
-"${BASEDIR}"/setup-ssh-authentication.ssh
+"${BASEDIR}"/setup-ssh-authentication.sh
 
 
 
