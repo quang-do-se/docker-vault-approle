@@ -65,10 +65,17 @@ RUN set -o errexit -o nounset \
   && echo "Testing Vault installation" \
   && vault --version
 
-COPY ./ansible/* /data/ansible
+RUN set -eux; \
+  groupadd --gid 9999 --system orchestrator; \
+  useradd --uid 9999 --system --shell /bin/bash --create-home --gid orchestrator orchestrator;
+
+WORKDIR /home/orchestrator
+
+COPY ./ansible/* /data/ansible/
 COPY ./files/entrypoint.sh /usr/local/bin/entrypoint.sh
 
-RUN chmod +x /usr/local/bin/entrypoint.sh;
+RUN chmod +x /usr/local/bin/entrypoint.sh; \
+  chown -R orchestrator:orchestrator /data/ansible
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 

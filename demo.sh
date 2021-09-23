@@ -148,7 +148,7 @@ vault write auth/approle/role/app policies=hello-world-policy
 ### ORCHESTRATOR CONTAINER
 
 # Run playbook
-cd /data/files && ansible-playbook ansible-playbook-deploy-app.yml --inventory=inventory.yml
+cd /data/ansible && ansible-playbook ansible-playbook-deploy-app.yml --inventory=inventory.yml
 
 
 

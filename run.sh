@@ -63,4 +63,4 @@ ${run_orchestrator_container} vault login "${token}"
 
 # Run ansible playbook
 
-${run_orchestrator_container} bash -c 'cd /data/files && ansible-playbook ansible-playbook-deploy-app.yml --inventory=inventory.yml'
+${run_orchestrator_container} bash -c 'cd /data/ansible && ansible-playbook ansible-playbook-deploy-app.yml --inventory=inventory.yml'

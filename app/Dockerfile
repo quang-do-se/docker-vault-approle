@@ -64,6 +64,12 @@ RUN set -o errexit -o nounset \
 
 EXPOSE 22
 
+RUN set -eux; \
+  groupadd --gid 9999 --system app; \
+  useradd --uid 9999 --system --shell /bin/bash --create-home --gid app app;
+
+WORKDIR /home/app
+
 COPY ./configs/ssh_config /etc/ssh/ssh_config
 COPY ./configs/sshd_config /etc/ssh/sshd_config
 COPY ./files/entrypoint.sh /usr/local/bin/entrypoint.sh
