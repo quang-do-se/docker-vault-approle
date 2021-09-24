@@ -132,8 +132,15 @@ vault auth enable approle
 # Create role 'orchestrator'
 vault write auth/approle/role/orchestrator secret_id_ttl=120m token_ttl=60m token_max_ttl=120m
 
+# For more info
+vault read auth/approle/role/orchestrator
+
+
 # Create role 'app'
 vault write auth/approle/role/app secret_id_ttl=120m token_ttl=60m token_max_ttl=60m
+
+# For more info
+vault read auth/approle/role/app
 ```
 
 - **secret_id_ttl**: how long a secret id can be used to get a fresh token before expired.
@@ -221,6 +228,9 @@ vault write -force -field=secret_id auth/approle/role/app/secret-id
 ``` shell
 # TODO: replace empty strings with orchestrator's Role ID and Secret ID
 vault login $(vault write -field=token auth/approle/login role_id="" secret_id="")
+
+# For more info
+vault token lookup
 ```
 
 - In `app` container, run:
@@ -228,6 +238,9 @@ vault login $(vault write -field=token auth/approle/login role_id="" secret_id="
 ``` shell
 # TODO: replace empty strings with app's Role ID and Secret ID
 vault login $(vault write -field=token auth/approle/login role_id="" secret_id="")
+
+# For more info
+vault token lookup
 ```
 
 - You should see a success message. If not, some steps may be missing or not done correctly.
@@ -278,9 +291,7 @@ tail -n 1000 -f /home/app/logs/spring-vault.log
 
 - Try to add another secret in Vault and see if the API is updated
 
-
-
-### Extra: Change token_ttl and see how the log changes
+## Extra: Change token_ttl and see how the log changes
 
 - In `vault` container, run this command to update `token_ttl=10s`: 
 
