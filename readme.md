@@ -44,7 +44,7 @@ docker ps
 docker-compose logs
 ```
 
-- Set up SSH connection betwen `orchestrator` and `app` containers
+- Set up SSH connection between `orchestrator` and `app` containers
 
 ``` shell
 ./setup-ssh-authentication.sh
