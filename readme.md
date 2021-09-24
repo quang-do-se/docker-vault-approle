@@ -273,7 +273,7 @@ rm ~/.vault-token
 
 - **Note**: Please reference your notepad for Role ID and Secret ID you saved in [this section](#Generate-Role-IDs-and-Secret-IDs)
 
-- In `orchestrator` container, run:
+- In `orchestrator` container, deploy application using [ansible playbook](https://github.com/quang-do-se/docker-vault-approle/blob/main/orchestrator/ansible/ansible-playbook-deploy-app.yml):
 
 ``` shell
 cd /data/ansible
