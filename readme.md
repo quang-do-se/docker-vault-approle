@@ -296,7 +296,7 @@ tail -n 1000 -f /home/app/logs/spring-vault.log
 - In `vault` container, run this command to update `token_ttl=10s`: 
 
 ``` shell
-vault write auth/approle/role/app secret_id_ttl=120m token_ttl=10s token_max_ttl=60m
+vault write auth/approle/role/app token_ttl=10s
 ```
 
 - In `orchestrator` container, redeploy the application:
