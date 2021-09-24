@@ -132,14 +132,14 @@ vault auth enable approle
 # Create role 'orchestrator'
 vault write auth/approle/role/orchestrator secret_id_ttl=120m token_ttl=60m token_max_ttl=120m
 
-# For more info
+# For more info about role 'orchestrator'
 vault read auth/approle/role/orchestrator
 
 
 # Create role 'app'
 vault write auth/approle/role/app secret_id_ttl=120m token_ttl=60m token_max_ttl=60m
 
-# For more info
+# For more info about role 'app'
 vault read auth/approle/role/app
 ```
 
