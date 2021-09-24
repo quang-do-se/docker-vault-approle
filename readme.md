@@ -221,7 +221,7 @@ vault write -force -field=secret_id auth/approle/role/app/secret-id
 
 - We are done with our Vault setup. Now let's confirm if our new roles have the correct permission.
 
-- **Note**: Please reference your notepad for Role ID and Secret ID you saved in [this section](#Generate-Role-IDs-and-Secret-IDs)
+- **Note**: Please reference Role ID and Secret ID you saved in [this section](#Generate-Role-IDs-and-Secret-IDs)
 
 - In `orchestrator` container, run:
 
@@ -271,7 +271,7 @@ rm ~/.vault-token
 
 ## Run Ansible playbook to build and deploy Java application
 
-- **Note**: Please reference your notepad for Role ID and Secret ID you saved in [this section](#Generate-Role-IDs-and-Secret-IDs)
+- **Note**: Please reference Role ID and Secret ID you saved in [this section](#Generate-Role-IDs-and-Secret-IDs)
 
 - In `orchestrator` container, deploy application using [ansible playbook](https://github.com/quang-do-se/docker-vault-approle/blob/main/orchestrator/ansible/ansible-playbook-deploy-app.yml):
 
