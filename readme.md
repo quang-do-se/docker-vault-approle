@@ -316,7 +316,7 @@ tail -n 1000 -f /home/app/logs/spring-vault.log
 
 - Observe the log, you should see the token freshed every 10 seconds
 
-## Extra: revoke Secret ID
+## Extra: Revoke Secret ID
 
 - There is no CLI support for revoking Secret ID. However, we can do it using Vault API.
 
