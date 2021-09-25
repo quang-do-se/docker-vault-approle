@@ -156,7 +156,7 @@ vault read auth/approle/role/app
 ``` shell
 vault policy write hello-world-policy -<<EOF
 path "secret/data/hello-world" {
-capabilities = ["read", "list"]
+  capabilities = ["read", "list"]
 }
 EOF
 ```
@@ -166,7 +166,7 @@ EOF
 ``` shell
 vault policy write orchestrator-policy -<<EOF
 path "auth/approle/role/app*" {
-capabilities = ["create", "read", "update", "delete", "list"]
+  capabilities = ["create", "read", "update", "delete", "list"]
 }
 EOF
 ```
@@ -315,6 +315,21 @@ tail -n 1000 -f /home/app/logs/spring-vault.log
 - Go to http://localhost:8888/
 
 - Observe the log, you should see the token freshed every 10 seconds
+
+## Extra: revoke Secret ID
+
+- There is no CLI support for revoking Secret ID. However, we can do it using Vault API.
+
+- In `orchestrator` or `vault` container, run:
+
+``` shell
+# TODO: replace empty string with Secret ID to revoke
+curl -i -X POST \
+     -H "X-Vault-Request: true" \
+     -H "X-Vault-Token: $(vault print token)" \
+     --data '{"secret_id": ""}' \
+     http://vault:8200/v1/auth/approle/role/app/secret-id/destroy
+```
 
 # Cleanup
 

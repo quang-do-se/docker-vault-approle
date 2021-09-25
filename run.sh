@@ -35,14 +35,14 @@ ${run_vault_container} vault write auth/approle/role/app secret_id_ttl=120m toke
 # Create a policy to read secret
 ${run_vault_container} vault policy write "${policy_name}" -<<EOF
 path "secret/data/${secret_path}" {
- capabilities = ["read", "list"]
+  capabilities = ["read", "list"]
 }
 EOF
 
 # Create a new policy for "orchestrator" role
 ${run_vault_container} vault policy write orchestrator-policy -<<EOF
 path "auth/approle/role/app*" {
- capabilities = ["create", "read", "update", "delete", "list"]
+  capabilities = ["create", "read", "update", "delete", "list"]
 }
 EOF
 
